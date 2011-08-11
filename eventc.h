@@ -39,6 +39,7 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 	mqd_t recv_queue; \
 \
 	tmp_struct = malloc(sizeof(*tmp_struct)); \
+	assert(tmp_struct != NULL); \
 	memcpy(tmp_struct, struct_in, sizeof(tmp_struct)); \
 \
 	recv_queue = find_receiver_queue(comp_details, COMP_ID); \

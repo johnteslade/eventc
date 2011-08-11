@@ -4,8 +4,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+//#include <sys/stat.h>
+//#include <sys/types.h>
 #include <errno.h>
 #include <mqueue.h>
 
@@ -31,7 +31,7 @@ static mqd_t thread2_mq;
 // Public
 /***************************************/
 
-void main()
+int main()
 {
 	
 	comp_t * thread_1 = NULL;
@@ -42,6 +42,7 @@ void main()
 	thread1_mq = thread_1->queue_id; // TODO remove
 
 
+	free(thread_1);
 
 }
 
@@ -79,17 +80,22 @@ static mqd_t open_queue(int instance_id)
 {
 
 	char queue_name[100];
-	mqd_t thread1_mq;
+	mqd_t new_mq_ref;
 
 	/* Create the queue */
-	sprintf(queue_name, "/thread%d", instance_id);
-	thread1_mq = create_thread_q(queue_name);
+	(void)snprintf(queue_name, sizeof(queue_name), "/thread%d", instance_id);
+	new_mq_ref = create_thread_q(queue_name);
+
+	return new_mq_ref;
 
 }
 
 /******* Event C code ****/
 
-mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id)
+mqd_t find_receiver_queue(
+	/*@unused@*/comp_t * sender_details, 
+	int dest_comp_id
+)
 {
 
 	if (dest_comp_id == THREAD_1)
@@ -104,6 +110,8 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id)
 	{
 		assert(0);
 	}
+		
+	return -1;
 
 }
 
@@ -116,7 +124,6 @@ static mqd_t create_thread_q(char * name)
 
     mqd_t mq;
     struct mq_attr attr;
-    int must_stop = 0;
 
     /* initialize the queue attributes */
     attr.mq_flags = 0;

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
 
 
 
@@ -21,6 +22,7 @@ comp_t * thread_1_new(void)
 
 	/* Malloc space for component details */
 	new_self = malloc(sizeof(thread_1_comp_t));
+	assert(new_self != NULL);
 
 	EVENTC_SET_COMPONENT(new_self, THREAD_1);
 	
@@ -37,9 +39,11 @@ comp_t * thread_1_new(void)
 void * thread_1(void * start_ptr)
 {
 
+	thread_1_comp_t * local_attr = NULL;
+	
 	assert(start_ptr != NULL);
 
-	thread_1_comp_t * local_attr = (thread_1_comp_t*)start_ptr; 
+	local_attr = (thread_1_comp_t*)start_ptr; 
 
 	printf("%s started\n", __FUNCTION__);
 
@@ -81,7 +85,7 @@ void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
 
 	// Send message 
 	{
-		thread_2_input send_struct;
+		thread_2_input send_struct = {0};
 		send_struct.int1 = struct_in->int1 + 1;
 		send_struct.int2 = struct_in->int2 + 1;
 		thread_2_function_call(&(self->comp_details), &send_struct);
