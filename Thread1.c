@@ -111,24 +111,3 @@ void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
 
 CALL_FUNCTION_IMPLEMENTATION(thread_1_function_call, thread_1_input, THREAD_1)
 
-/*
-
-void thread_1_function_call(comp_t * comp_details, thread_1_input * struct_in)
-{
-
-	thread_1_input * tmp_struct;
-	int ret;
-	mqd_t recv_queue;
-
-	tmp_struct = malloc(sizeof(*tmp_struct));
-	memcpy(tmp_struct, struct_in, sizeof(tmp_struct));
-
-	recv_queue = find_receiver_queue(comp_details, THREAD_1);
-
-	ret = mq_send(recv_queue, (const char *)&tmp_struct, sizeof(tmp_struct), 0);
-	assert(ret == 0);
-	
-}
-
-*/
-
