@@ -20,8 +20,8 @@ typedef struct
 } thread_2_comp_t;
 
 void thread_2_function(thread_2_comp_t * self, thread_2_input * struct_in);
-void thread_2_function_call(comp_t * comp_details, thread_2_input * struct_in);
 
+CALL_FUNCTION_FUNC_PROTO(thread_2_function_call, thread_2_input);
 
 #endif /* thread2_h */
 

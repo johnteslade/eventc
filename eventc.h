@@ -31,7 +31,10 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 
 #define CONCAT(x,y) x##y
 
-#define CALL_FUNCTION_IMPLEMENTATION(NAME, INPUT_TYPE, COMP_ID) void NAME(comp_t * comp_details, INPUT_TYPE * struct_in) \
+
+#define CALL_FUNCTION_FUNC_PROTO(NAME, INPUT_TYPE) void NAME(comp_t * comp_details, INPUT_TYPE * struct_in)
+
+#define CALL_FUNCTION_IMPLEMENTATION(NAME, INPUT_TYPE, COMP_ID) CALL_FUNCTION_FUNC_PROTO(NAME, INPUT_TYPE) \
 { \
 \
 	INPUT_TYPE * tmp_struct; \

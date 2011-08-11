@@ -23,7 +23,8 @@ typedef struct
 comp_t * thread_1_new(void);
 void * thread_1(void * start_ptr);
 void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in);
-void thread_1_function_call(comp_t * comp_details, thread_1_input * struct_in);
+
+CALL_FUNCTION_FUNC_PROTO(thread_1_function_call, thread_1_input);
 
 #endif /* thread1_h */
 
