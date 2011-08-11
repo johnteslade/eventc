@@ -38,11 +38,12 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 #define CALL_FUNCTION_IMPLEMENTATION(NAME, INPUT_TYPE, COMP_ID) CALL_FUNCTION_FUNC_PROTO(NAME, INPUT_TYPE) \
 { \
 \
-	INPUT_TYPE * tmp_struct; \
-	int ret; \
+	INPUT_TYPE * tmp_struct = NULL; \
+	int ret = -1; \
 	mqd_t recv_queue; \
 \
 	tmp_struct = malloc(sizeof(*tmp_struct)); \
+	memset(tmp_struct, 0x00, sizeof(*tmp_struct)); \
 	assert(tmp_struct != NULL); \
 	memcpy(tmp_struct, struct_in, sizeof(tmp_struct)); \
 \
