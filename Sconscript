@@ -9,6 +9,7 @@ env.Append(LIBS = [
 
 source_files = [
 	"myprog.c",
+	"eventc_connections.c",
 	"Thread1.c",
 	"Thread2.c",
 ]

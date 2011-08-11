@@ -11,6 +11,8 @@
 
 
 #include "eventc.h"
+#include "eventc_connections.h"
+
 #include "model.h"
 #include "Thread1.h"
 #include "Thread2.h"
@@ -26,10 +28,6 @@ static mqd_t create_thread_q(char * name);
 static void start_component(comp_t * comp_details);
 static void wait_thread(comp_t * comp_details);
 
-// Temp vars until reciever queues impleneted.  TODO remove
-static mqd_t thread1_mq;
-static mqd_t thread2_mq;
-
 /***************************************/
 // Public
 /***************************************/
@@ -44,15 +42,16 @@ int main()
 	{
 		thread_1 = thread_1_new();
 		init_component(thread_1);	
-		thread1_mq = thread_1->queue_id; // TODO remove
 	}
 
 	/* Create thread 2 */
 	{
 		thread_2 = thread_2_new();
 		init_component(thread_2);	
-		thread2_mq = thread_2->queue_id; // TODO remove
 	}
+
+	/* Add connection */
+	eventc_connections_add(thread_1, thread_2);
 
 	/* Start all components */
 	start_component(thread_1);	
@@ -135,28 +134,7 @@ static mqd_t open_queue(int instance_id)
 
 /******* Event C code ****/
 
-mqd_t find_receiver_queue(
-	/*@unused@*/comp_t * sender_details, 
-	int dest_comp_id
-)
-{
 
-	if (dest_comp_id == THREAD_1)
-	{
-		return thread1_mq;
-	}
-	else if (dest_comp_id == THREAD_2)
-	{
-		return thread2_mq;
-	}
-	else
-	{
-		assert(0);
-	}
-		
-	return -1;
-
-}
 
 /******* Util funcs ****/
 
