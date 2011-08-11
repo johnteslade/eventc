@@ -1,4 +1,6 @@
 *.o
 .sconsign.dblite
 .*.sw*
+tags
+eventc
 
