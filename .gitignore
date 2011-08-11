@@ -2,5 +2,4 @@
 .sconsign.dblite
 .*.sw*
 tags
-eventc
-
+build/

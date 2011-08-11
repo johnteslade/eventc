@@ -1,4 +1,4 @@
-env = Environment()   # Create an environmnet
+Import('env')
 
 env.Append(CCFLAGS = '-g')
 
