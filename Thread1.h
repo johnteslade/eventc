@@ -7,11 +7,6 @@ Public header file for thread 1
 #ifndef thread1_h
 #define thread1_h
 
-#include "eventc.h"
-
-/* Define the name of the private header for this thread - TODO could this all be based off thread name */
-#define EVENTC_PRIVATE_HEADER "Thread1_pri.h"
-
 /* Structures used as inputs */
 
 typedef struct {
@@ -19,9 +14,16 @@ typedef struct {
 	int int2;
 } thread_1_input;
 
-/* Create prototypes for public functions */
-#include "eventc_pub_proto.h"
+typedef struct 
+{
+	EVENTC_COMP_STRUCT_START
+	int static_val_1;
+} thread_1_comp_t;
 
+comp_t * thread_1_new(void);
+void * thread_1(void * start_ptr);
+void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in);
+void thread_1_function_call(comp_t * comp_details, thread_1_input * struct_in);
 
 #endif /* thread1_h */
 
