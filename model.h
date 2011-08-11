@@ -10,8 +10,8 @@ Public header file for this model
 /* Define list of components */
 enum EVENT_C_COMPONENTS
 {
-	THREAD_1,
-	THREAD_2
+	THREAD_1 = 1,
+	THREAD_2 = 2
 };
 
 #endif /* model_h */
