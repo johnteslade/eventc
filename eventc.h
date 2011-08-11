@@ -27,8 +27,8 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 	mqd_t recv_queue; \
 \
 	tmp_struct = malloc(sizeof(*tmp_struct)); \
-	memset(tmp_struct, 0x00, sizeof(*tmp_struct)); \
 	assert(tmp_struct != NULL); \
+	memset(tmp_struct, 0x00, sizeof(*tmp_struct)); \
 	memcpy(tmp_struct, struct_in, sizeof(tmp_struct)); \
 \
 	recv_queue = eventc_connections_find_receiver(comp_details, COMP_ID); \
