@@ -8,8 +8,6 @@
 #include "eventc_types.h"
 #include "eventc_connections.h"
 
-typedef void * (*pthread_start_routine)(void *);
-
 /* Functions */
 
 mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
