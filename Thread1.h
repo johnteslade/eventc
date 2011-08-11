@@ -21,6 +21,7 @@ typedef struct
 } thread_1_comp_t;
 
 comp_t * thread_1_new(void);
+void thread_1_start(thread_1_comp_t * self);
 void * thread_1(void * start_ptr);
 void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in);
 

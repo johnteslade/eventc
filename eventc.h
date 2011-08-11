@@ -12,6 +12,7 @@ typedef struct {
 	int comp_id;
 	int instance_id;
 	mqd_t queue_id;
+	pthread_t thread_id;
 	pthread_start_routine start_func;
 } comp_t;
 

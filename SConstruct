@@ -7,4 +7,13 @@ env.Append(LIBS = [
 	'pthread',
 ])
 
-env.Program(target = "eventc", source = ["myprog.c","Thread1.c"])
+source_files = [
+	"myprog.c",
+	"Thread1.c",
+	"Thread2.c",
+]
+
+env.Program(
+	target = "eventc", 
+	source = source_files
+)

@@ -13,6 +13,7 @@
 #include "eventc.h"
 #include "model.h"
 #include "Thread1.h"
+#include "Thread2.h"
 
 /***************************************/
 // Static protypes
@@ -22,6 +23,8 @@ static void init_component(comp_t * comp_details);
 static void start_thread(comp_t * comp_details);
 static mqd_t open_queue(int instance_id);
 static mqd_t create_thread_q(char * name);
+static void start_component(comp_t * comp_details);
+static void wait_thread(comp_t * comp_details);
 
 // Temp vars until reciever queues impleneted.  TODO remove
 static mqd_t thread1_mq;
@@ -35,14 +38,34 @@ int main()
 {
 	
 	comp_t * thread_1 = NULL;
+	comp_t * thread_2 = NULL;
 	
-	/* Start thread 1 */
-	thread_1 = thread_1_new();
-	init_component(thread_1);	
-	thread1_mq = thread_1->queue_id; // TODO remove
+	/* Create thread 1 */
+	{
+		thread_1 = thread_1_new();
+		init_component(thread_1);	
+		thread1_mq = thread_1->queue_id; // TODO remove
+	}
 
+	/* Create thread 2 */
+	{
+		thread_2 = thread_2_new();
+		init_component(thread_2);	
+		thread2_mq = thread_2->queue_id; // TODO remove
+	}
 
+	/* Start all components */
+	start_component(thread_1);	
+	start_component(thread_2);	
+
+	/* Wait the main program on these threads */
+	// TODO sort this out - we cannot wait on all threads to finish
+	wait_thread(thread_1);
+	wait_thread(thread_2);
+
+	/* Free components now - TODO need a clear function on each component */
 	free(thread_1);
+	free(thread_2);
 
 }
 
@@ -58,20 +81,40 @@ static void init_component(comp_t * comp_details)
 
 }
 
+static void start_component(comp_t * comp_details)
+{
+
+	int ret; 
+
+	void * send_ptr = NULL;
+
+	// Fire a NULL pointer at the component to start it
+	ret = mq_send(comp_details->queue_id, (const char *)&send_ptr, sizeof(void *), 0); 
+	assert(ret == 0);
+	
+}
+
+
+
 static void start_thread(comp_t * comp_details)
 {
 
 	int s;
-	pthread_t thread_1_id;
 	pthread_attr_t attr;
 
 	s = pthread_attr_init(&attr);
 
 	/* Create the new thread for this component */
-	s = pthread_create(&thread_1_id, &attr, comp_details->start_func, comp_details);
+	s = pthread_create(&(comp_details->thread_id), &attr, comp_details->start_func, comp_details);
 	assert(s == 0);
-	
-	s = pthread_join(thread_1_id, NULL);
+
+}
+
+static void wait_thread(comp_t * comp_details)
+{
+
+	int s;
+	s = pthread_join(comp_details->thread_id, NULL);
 	assert(s == 0);
 
 }

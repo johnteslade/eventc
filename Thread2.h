@@ -19,8 +19,10 @@ typedef struct
 	int static_val_2;
 } thread_2_comp_t;
 
+void * thread_2(void * start_ptr);
+comp_t * thread_2_new(void);
+void thread_2_start(thread_2_comp_t * self);
 void thread_2_function(thread_2_comp_t * self, thread_2_input * struct_in);
-
 CALL_FUNCTION_FUNC_PROTO(thread_2_function_call, thread_2_input);
 
 #endif /* thread2_h */

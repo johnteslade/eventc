@@ -19,6 +19,8 @@ comp_t * thread_1_new(void)
 	/* TODO this can be broken apart so it just does component specific items */
 
 	thread_1_comp_t * new_self = NULL;
+	
+	printf("%s: top\n", __FUNCTION__);
 
 	/* Malloc space for component details */
 	new_self = malloc(sizeof(thread_1_comp_t));
@@ -40,6 +42,8 @@ void * thread_1(void * start_ptr)
 {
 
 	thread_1_comp_t * local_attr = NULL;
+	
+	printf("%s: top\n", __FUNCTION__);
 	
 	assert(start_ptr != NULL);
 
@@ -63,16 +67,28 @@ void * thread_1(void * start_ptr)
 
 		printf("%s: mq recv\n", __FUNCTION__);
 
-		/* TODO use func pointers here or perhaps we can autogen this */
+		if (recv_data == NULL)
+		{
+			thread_1_start(local_attr);
+		}
+		else
+		{
 
-		thread_1_function(local_attr, recv_data);
-		
-		free(recv_data);
+			/* TODO use func pointers here or perhaps we can autogen this */
+			thread_1_function(local_attr, recv_data);
+
+			free(recv_data);
+		}
 	
 	}
 
 	free(local_attr);
 
+}
+
+void thread_1_start(thread_1_comp_t * self)
+{
+	printf("%s: start\n", __FUNCTION__);
 }
 
 void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
