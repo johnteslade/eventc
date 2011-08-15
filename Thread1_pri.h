@@ -10,6 +10,9 @@ Private header file for thread 1
 // EVENTC: comp=THREAD_1
 // EVENTC: comp_type=thread_1_comp_t
 
+#include "eventc.h"
+#include "Thread1.h"
+
  /* Structures used as inputs */
  
 typedef struct 
