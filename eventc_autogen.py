@@ -31,7 +31,14 @@ def gen_main(template, name, start_func, comp_type, comp_id, switch_contents):
 	return template	
 
 header_file = sys.argv[1]
-output_file = sys.argv[2]
+
+# Create the output file names - TODO reenable this
+#base_file_name = re.sub(".h$", "", header_file) 
+#output_c_file = base_file_name + "_autogen.c"
+#output_h_file = base_file_name + "_autogen.h"
+
+output_c_file = sys.argv[2]
+output_h_file = sys.argv[3]
 
 # Open header and get contents
 component_header_file = open(header_file, 'r').read()
@@ -68,15 +75,26 @@ print call_func_implemenations
 print call_func_protos
 print call_func_switch
 
-# Open the output file and spit out data
-out_file = open(output_file, 'w')
+# Open the output c file and spit out data
+out_c_file = open(output_c_file, 'w')
 
-out_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) 
+out_c_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) 
 
 # Main func
-out_file.write("\n\n///////////////////////////////\n// MAIN FUNC\n///////////////////////////////\n\n")
-out_file.write(gen_main(template_main, component_main_func, component_start_func, component_type, component_name, "\n".join(call_func_switch)))
+out_c_file.write("\n\n///////////////////////////////\n// MAIN FUNC\n///////////////////////////////\n\n")
+out_c_file.write(gen_main(template_main, component_main_func, component_start_func, component_type, component_name, "\n".join(call_func_switch)))
 
 # Call funcs
-out_file.write("\n\n///////////////////////////////\n// CALL FUNCS\n///////////////////////////////\n\n")
-out_file.write("\n\n".join(call_func_implemenations))
+out_c_file.write("\n\n///////////////////////////////\n// CALL FUNCS\n///////////////////////////////\n\n")
+out_c_file.write("\n\n".join(call_func_implemenations))
+
+
+# Output the header file
+out_h_file = open(output_h_file, 'w')
+
+# TODO need to add guards
+
+out_h_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) 
+
+out_h_file.write("\n\n///////////////////////////////\n// CALL FUNCS\n///////////////////////////////\n\n")
+out_h_file.write("\n\n".join(call_func_protos))

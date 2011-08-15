@@ -2,7 +2,6 @@
 
 #include "eventc.h"
 #include "model.h"
-#include "Thread1.h"
 #include "Thread2.h"
 
 #include <stdio.h>
@@ -11,7 +10,8 @@
 #include <assert.h>
 #include <unistd.h>
 
-
+#include "Thread1.h"
+#include "Thread1_pri.h"
 
 comp_t * thread_1_new(void)
 {
