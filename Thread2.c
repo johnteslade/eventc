@@ -106,8 +106,8 @@ void thread_2_function(thread_2_comp_t * self, thread_2_input * struct_in)
 	// Send message 
 	{
 		thread_1_input send_struct = {0};
-		send_struct.int1 = struct_in->int1 + 1;
-		send_struct.int2 = struct_in->int2 - 1;
+		send_struct.int1 = struct_in->int1;
+		send_struct.int2 = struct_in->int2;
 		thread_1_function_call(&(self->comp_details), &send_struct);
 	}
 
