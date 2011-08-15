@@ -63,13 +63,14 @@ function_id = 0
 
 for m in function_re.finditer(component_header_file):
 
-	function_name = "CALL_" + m.group(1)
+	function_name_orig = m.group(1)
+	function_name = "CALL_" + function_name_orig
 	function_input_type = m.group(4)
 	function_id = function_id + 1
 
 	call_func_implemenations.append(gen_call_func(template_call_func, function_name, function_input_type, component_name, function_id))
 	call_func_protos.append(gen_call_proto(function_name, function_input_type))
-	call_func_switch.append(gen_call_switch(function_name, function_input_type, function_id))
+	call_func_switch.append(gen_call_switch(function_name_orig, function_input_type, function_id))
 
 #print call_func_implemenations
 #print call_func_protos
@@ -79,6 +80,21 @@ for m in function_re.finditer(component_header_file):
 out_c_file = open(output_c_file, 'w')
 
 out_c_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M")) 
+
+# Include the header files
+included_headers = [
+	header_file,
+	"eventc.h",
+	"model.h",
+	"stdio.h",
+	"stdlib.h",
+	"string.h",
+	"assert.h",
+	"unistd.h",
+]	
+
+for header in included_headers:
+	out_c_file.write("""#include "%s"\n\n""" % header) 
 
 # Main func
 out_c_file.write("\n\n///////////////////////////////\n// MAIN FUNC\n///////////////////////////////\n\n")
