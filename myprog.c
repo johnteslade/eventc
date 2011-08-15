@@ -88,7 +88,7 @@ static void start_component(comp_t * comp_details)
 	eventc_call_t call_struct = {0};
 	
 	// Fire a NULL pointer at the component to start it
-	call_struct.func_id = 0;
+	call_struct.function_id = 0;
 	call_struct.comp_id = comp_details->comp_id;
 	call_struct.data = NULL;
 
