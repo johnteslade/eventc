@@ -17,7 +17,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 	while (1)
 	{
 
-		eventc_call_t call_struct = {0};
+		eventc_call_t * call_struct = NULL;
 		ssize_t bytes_read;
 
 		/* receive the message */
@@ -27,26 +27,28 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 		
 		assert(bytes_read >= 0);
 		assert(bytes_read == sizeof(call_struct));
-		assert(call_struct.comp_id == <COMP_ID>);
+		assert(call_struct->comp_id == <COMP_ID>);
 
 		printf("%s: mq recv\n", __FUNCTION__);
 
-		if (call_struct.data == NULL)
+		if (call_struct->data == NULL)
 		{
 			<COMP_START_FUNC>(local_attr);
 		}
 		else
 		{
 
-			switch (call_struct.func_id)
+			switch (call_struct->function_id)
 			{
 				<SWITCH_CONTENTS>
 				default:
 					assert(0);
 			}
 
-			free(call_struct.data);
+			free(call_struct->data);
 		}
+		
+		free(call_struct);
 	
 	}
 

@@ -18,7 +18,7 @@ def gen_call_proto(name, input_type):
 	
 def gen_call_switch(name, input_type, func_id):
 	
-	return """case %d: %s(local_attr, (%s *)call_struct.data); break;""" % (func_id, name, input_type)
+	return """case %d: %s(local_attr, (%s *)call_struct->data); break;""" % (func_id, name, input_type)
 
 def gen_main(template, name, start_func, comp_type, comp_id, switch_contents):
 
