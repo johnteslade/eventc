@@ -3,3 +3,6 @@
 .*.sw*
 tags
 build/
+
+*_autogen.h
+*_autogen.c
