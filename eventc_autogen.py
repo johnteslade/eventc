@@ -71,9 +71,9 @@ for m in function_re.finditer(component_header_file):
 	call_func_protos.append(gen_call_proto(function_name, function_input_type))
 	call_func_switch.append(gen_call_switch(function_name, function_input_type, function_id))
 
-print call_func_implemenations
-print call_func_protos
-print call_func_switch
+#print call_func_implemenations
+#print call_func_protos
+#print call_func_switch
 
 # Open the output c file and spit out data
 out_c_file = open(output_c_file, 'w')
@@ -98,3 +98,6 @@ out_h_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime(
 
 out_h_file.write("\n\n///////////////////////////////\n// CALL FUNCS\n///////////////////////////////\n\n")
 out_h_file.write("\n\n".join(call_func_protos))
+
+print "Done.  Created %s and %s" % (output_c_file, output_h_file)
+
