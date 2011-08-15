@@ -85,10 +85,14 @@ static void start_component(comp_t * comp_details)
 
 	int ret; 
 
-	void * send_ptr = NULL;
-
+	eventc_call_t call_struct = {0};
+	
 	// Fire a NULL pointer at the component to start it
-	ret = mq_send(comp_details->queue_id, (const char *)&send_ptr, sizeof(void *), 0); 
+	call_struct.func_id = 0;
+	call_struct.comp_id = comp_details->comp_id;
+	call_struct.data = NULL;
+
+	ret = mq_send(comp_details->queue_id, (const char *)&call_struct, sizeof(call_struct), 0); 
 	assert(ret == 0);
 	
 }
@@ -104,7 +108,7 @@ static void start_thread(comp_t * comp_details)
 	s = pthread_attr_init(&attr);
 
 	/* Create the new thread for this component */
-	s = pthread_create(&(comp_details->thread_id), &attr, comp_details->start_func, comp_details);
+	s = pthread_create(&(comp_details->thread_id), &attr, comp_details->main_func, comp_details);
 	assert(s == 0);
 
 }
