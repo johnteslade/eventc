@@ -42,6 +42,8 @@ void eventc_component_init(comp_t * comp_details)
 	/* Start thread */
 	start_thread(comp_details);
 
+	printf("%s: Instance created.  Comp %s, Instance %d\n", __FUNCTION__, comp_details->comp_name, comp_details->instance_id);
+
 }
 
 void eventc_component_start(comp_t * comp_details)
