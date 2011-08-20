@@ -11,6 +11,7 @@
 
 void eventc_funcqueue_add(
 	int function_id,
+	char * function_name,
 	int comp_id,
 	comp_t * sender_details, 
 	void * data,
@@ -21,6 +22,8 @@ void eventc_funcqueue_add(
 	eventc_call_t * call_struct = NULL; /* Message structure */
 	int ret = -1; 
 	mqd_t recv_queue; 
+
+	printf("%s: %s inst:%d calling %s\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, function_name);
 
 	/* Create the call struct */
 	call_struct = malloc(sizeof(*call_struct));

@@ -11,6 +11,7 @@ Public header file for eventc funcqueue
 
 void eventc_funcqueue_add(
 	int function_id,
+	char * function_name,
 	int comp_id,
 	comp_t * sender_details, 
 	void * data,
