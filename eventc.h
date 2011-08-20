@@ -21,6 +21,8 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 
 #define EVENTC_COMP_MAIN void *
 
+#define EVENTC_IS_VALID_PTR(x) (x != NULL)
+
 
 #endif /* eventc_h */
 

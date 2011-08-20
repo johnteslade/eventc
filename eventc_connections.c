@@ -35,6 +35,9 @@ void eventc_connections_add(
 
 	int i = 0; /* Loop counter */
 
+	assert(EVENTC_IS_VALID_PTR(comp_1));
+	assert(EVENTC_IS_VALID_PTR(comp_2));
+
 	printf("%s: adding connection between %d (comp %d) and %d (comp %d)\n", __FUNCTION__, comp_1->instance_id, comp_1->comp_id, comp_2->instance_id, comp_2->comp_id);
 
 	/* TODO look for multiple matches */
