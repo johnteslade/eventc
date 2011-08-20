@@ -27,6 +27,13 @@ typedef struct
 
 static connection_pair connection_pair_list[MAX_CONNECTIONS] = {0};
 
+static int eventc_connections_is_match(
+	comp_t * comp_sender, 
+	comp_t * comp_dest,
+	int sender_instance_id,
+	int dest_comp_id
+);
+
 void eventc_connections_add(
 	comp_t * comp_1, 
 	comp_t * comp_2
@@ -70,13 +77,11 @@ mqd_t eventc_connections_find_receiver(
 	{
 		if (connection_pair_list[i].in_use != 0)
 		{
-			if ( (connection_pair_list[i].comp_1.instance_id == sender_details->instance_id) && 
-				(connection_pair_list[i].comp_2.comp_id == dest_comp_id) )
+			if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, sender_details->instance_id, dest_comp_id))
 			{
 				return connection_pair_list[i].comp_2.queue_id;
 			}
-			else if ( (connection_pair_list[i].comp_2.instance_id == sender_details->instance_id) && 
-				(connection_pair_list[i].comp_1.comp_id == dest_comp_id) )
+			else if (eventc_connections_is_match(&connection_pair_list[i].comp_2, &connection_pair_list[i].comp_1, sender_details->instance_id, dest_comp_id))
 			{
 				return connection_pair_list[i].comp_1.queue_id;
 			}
@@ -88,5 +93,15 @@ mqd_t eventc_connections_find_receiver(
 
 }
 
+/* Detects if this component is a match to the current row */
+static int eventc_connections_is_match(
+	comp_t * comp_sender, 
+	comp_t * comp_dest,
+	int sender_instance_id,
+	int dest_comp_id
+)
+{
+	return ( (comp_sender->instance_id == sender_instance_id) && (comp_dest->comp_id == dest_comp_id) );
+}
 
 
