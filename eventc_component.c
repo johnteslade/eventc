@@ -21,15 +21,20 @@ static void start_thread(comp_t * comp_details);
 static mqd_t open_queue(int instance_id);
 
 /***************************************/
+// Local Variables
+/***************************************/
+
+static int next_instance_id = 1000; /* The next instance ID to use */
+
+/***************************************/
 // Public
 /***************************************/
 
 void eventc_component_init(comp_t * comp_details)
 {
-	static int instance_id = 999; /* TODO move this to a better place */
 
 	/* Set instance id */
-	comp_details->instance_id = instance_id++;
+	comp_details->instance_id = next_instance_id++;
 
 	/* Open queue */
 	comp_details->queue_id = open_queue(comp_details->instance_id);
