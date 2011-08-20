@@ -7,9 +7,29 @@
 #include <mqueue.h>
 #include <pthread.h>
 
+/* Structures are often cast between void * and back.  Guards and type fields are added to check the structure type of a recieved value */
+
+enum EVENTC_STRUCTS
+{
+	EVENTC_STRUCT_comp_t,
+	EVENTC_STRUCT_call_t,
+	EVENTC_STRUCT_timed_call_t
+};
+
+#define EVENTC_STRUCT_START int eventc_guard; int eventc_struct_type;
+
+#define EVENTC_GUARD_VALUE (0xECECEC)
+
+#define EVENTC_INIT_STRUCT(x, y) (x).eventc_guard = EVENTC_GUARD_VALUE; (x).eventc_struct_type = (y);
+
+#define EVENTC_ASSERT_CORRECT_STRUCT(x, y) assert((x).eventc_guard == EVENTC_GUARD_VALUE); assert((x).eventc_struct_type == (y));
+
+
+
 typedef void * (*pthread_start_routine)(void *);
 
 typedef struct {
+	EVENTC_STRUCT_START
 	int comp_id;
 	char * comp_name;
 	int instance_id;
@@ -21,10 +41,14 @@ typedef struct {
 
 /* Type used to send a call to another component */
 typedef struct {
+	EVENTC_STRUCT_START
 	int function_id;
 	int comp_id;
 	void * data;
 } eventc_call_t;
+
+
+
 
 #define EVENTC_COMP_STRUCT_START comp_t comp_details; /* Required as first element of compeont structs.  Allows all components to contain hidden elements. */
 
@@ -37,6 +61,7 @@ typedef struct {
 #define EVENTC_SET_MAIN_ROUTINE(x, y) EVENTC_MAIN_ROUTINE(x) = (y);
 
 #define EVENTC_SET_COMP_T(x, in_comp_id, in_comp_name, in_main_func) \
+	EVENTC_INIT_STRUCT((x)->comp_details, EVENTC_STRUCT_comp_t) \
 	(x)->comp_details.comp_id = (in_comp_id); \
 	(x)->comp_details.comp_name = (in_comp_name); \
 	(x)->comp_details.main_func = (in_main_func); 

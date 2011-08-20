@@ -11,7 +11,8 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 
 	printf("%s started\n", __FUNCTION__);
 
-	/* Check this is the correct thread data */
+	/* Check this is the correct stucture type */
+	EVENTC_ASSERT_CORRECT_STRUCT(local_attr->comp_details, EVENTC_STRUCT_comp_t);
 	assert(EVENTC_COMPONENT(local_attr) == <COMP_ID>);
 
 	while (1)
@@ -27,6 +28,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 		
 		assert(bytes_read >= 0);
 		assert(bytes_read == sizeof(call_struct));
+		EVENTC_ASSERT_CORRECT_STRUCT(*call_struct, EVENTC_STRUCT_call_t);
 		assert(call_struct->comp_id == <COMP_ID>);
 
 //		printf("%s: mq recv\n", __FUNCTION__);

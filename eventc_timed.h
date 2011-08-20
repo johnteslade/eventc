@@ -11,6 +11,7 @@ Public header file for eventc timed
 
 /* Type for a timed call */
 typedef struct {
+	EVENTC_STRUCT_START
 	int secs;
 	long nsecs;
 	mqd_t dest_queue_id;

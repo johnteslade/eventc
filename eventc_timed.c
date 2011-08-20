@@ -84,6 +84,7 @@ void * eventc_timed_start(void * dummy)
 		/* If we have a new event add it to the queue */
 		if (bytes_read >= 0)
 		{
+			EVENTC_ASSERT_CORRECT_STRUCT(*timed_event, EVENTC_STRUCT_timed_call_t);
 			add_timed_event(timed_event);	
 		}
 

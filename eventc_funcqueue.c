@@ -78,6 +78,7 @@ void eventc_funcqueue_timed(
 	/* Created time struct */
 	timed_call_event = malloc(sizeof(*timed_call_event));
 	assert(EVENTC_IS_VALID_PTR(timed_call_event));
+	EVENTC_INIT_STRUCT(*timed_call_event, EVENTC_STRUCT_timed_call_t);
 	timed_call_event->secs = current_time.tv_sec + secs;
 	timed_call_event->nsecs = current_time.tv_nsec + nsecs;
 	timed_call_event->dest_queue_id = recv_queue;
@@ -101,6 +102,7 @@ static void create_call_structure(
 	/* Create the call struct */
 	(*call_struct) = malloc(sizeof(*call_struct));
 	assert(EVENTC_IS_VALID_PTR(*call_struct));
+	EVENTC_INIT_STRUCT(**call_struct, EVENTC_STRUCT_call_t);
 	(*call_struct)->function_id = function_id;
 	(*call_struct)->comp_id = comp_id;
 

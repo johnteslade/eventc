@@ -50,6 +50,7 @@ void eventc_component_start(comp_t * comp_details)
 	assert(EVENTC_IS_VALID_PTR(call_struct));
 
 	// Fire a NULL pointer at the component to start it
+	EVENTC_INIT_STRUCT(*call_struct, EVENTC_STRUCT_call_t);
 	call_struct->function_id = 0;
 	call_struct->comp_id = comp_details->comp_id;
 	call_struct->data = NULL;
