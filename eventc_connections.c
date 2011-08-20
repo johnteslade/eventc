@@ -90,8 +90,9 @@ mqd_t eventc_connections_find_receiver(
 {
 	
 	int i = 0; /* Loop counter */
+	comp_t * receiver = NULL; /* The found row */
 
-	printf("%s: sending from %d (comp %d) to comp %d\n", __FUNCTION__, sender_details->instance_id, sender_details->comp_id, dest_comp_id);
+	printf("%s: sending from %s inst:%d to comp %d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, dest_comp_id);
 
 	/* Look at items in use and find the destination */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
@@ -100,17 +101,22 @@ mqd_t eventc_connections_find_receiver(
 		{
 			if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, sender_details->instance_id, dest_comp_id))
 			{
-				return connection_pair_list[i].comp_2.queue_id;
+				receiver = &(connection_pair_list[i].comp_2);
+				break;
 			}
 			else if (eventc_connections_is_match(&connection_pair_list[i].comp_2, &connection_pair_list[i].comp_1, sender_details->instance_id, dest_comp_id))
 			{
-				return connection_pair_list[i].comp_1.queue_id;
+				receiver = &(connection_pair_list[i].comp_1);
+				break;
 			}
 		}
 	}
+	
+	assert(EVENTC_IS_VALID_PTR(receiver));
+	
+	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, receiver->comp_name, receiver->instance_id);
 
-	assert(0);	
-	return -1;
+	return receiver->queue_id;
 
 }
 
