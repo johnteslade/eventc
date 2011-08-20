@@ -116,7 +116,7 @@ static void send_ready_events(void)
 		{
 
 			/* Find earliest time in the list */
-			if ( (timed_queue[i].event_details->secs <= current_time.tv_sec) && (timed_queue[i].event_details->nsecs <= current_time.tv_nsec) )
+			if ( (timed_queue[i].event_details->secs < current_time.tv_sec) || ( (timed_queue[i].event_details->secs == current_time.tv_sec) && (timed_queue[i].event_details->nsecs <= current_time.tv_nsec) ) )
 			{
 
 				printf("%s: timed event now being released Dest Comp: %d, Dest Func: %d\n", __FUNCTION__, timed_queue[i].event_details->event_call->comp_id, timed_queue[i].event_details->event_call->function_id);
