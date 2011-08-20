@@ -45,9 +45,25 @@ void eventc_connections_add(
 	assert(EVENTC_IS_VALID_PTR(comp_1));
 	assert(EVENTC_IS_VALID_PTR(comp_2));
 
-	printf("%s: adding connection between %d (comp %d) and %d (comp %d)\n", __FUNCTION__, comp_1->instance_id, comp_1->comp_id, comp_2->instance_id, comp_2->comp_id);
+	printf("%s: adding connection between %s inst:%d and %s inst:%d\n", __FUNCTION__, comp_1->comp_name, comp_1->instance_id, comp_2->comp_name, comp_2->instance_id);
 
-	/* TODO look for multiple matches */
+	/* Look for duplicate destinations */
+	for (i = 0; i < MAX_CONNECTIONS; i++)
+	{
+		if (connection_pair_list[i].in_use != 0)
+		{
+			if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, comp_1->instance_id, comp_2->comp_id))
+			{
+				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_pair_list[i].comp_1.comp_name, connection_pair_list[i].comp_1.instance_id, connection_pair_list[i].comp_2.comp_name, connection_pair_list[i].comp_2.instance_id); 
+				assert(0);
+			}
+			else if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, comp_2->instance_id, comp_1->comp_id))
+			{
+				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_pair_list[i].comp_2.comp_name, connection_pair_list[i].comp_2.instance_id, connection_pair_list[i].comp_1.comp_name, connection_pair_list[i].comp_1.instance_id); 
+				assert(0);
+			}
+		}
+	}
 
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
