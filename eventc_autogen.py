@@ -3,32 +3,13 @@ import re
 import string
 import datetime
 
-def gen_call_func(template, name, input_type, comp_id, func_id):
+# Returns the new template with replacements done
+def template_replace(template, subs_dict):
 
-	template = template.replace("<NAME>", name)
-	template = template.replace("<INPUT_TYPE>", input_type)
-	template = template.replace("<COMP_ID>", comp_id)
-	template = template.replace("<FUNC_ID>", "%d" % func_id)
+	for key in subs_dict:
+		template = template.replace("<%s>" % key, subs_dict[key])
 
 	return template
-
-def gen_call_proto(name, input_type):
-	
-	return """void %s(comp_t *, %s *);""" % (name, input_type)
-	
-def gen_call_switch(name, input_type, func_id):
-	
-	return """case %d: %s(local_attr, (%s *)call_struct->data); break;""" % (func_id, name, input_type)
-
-def gen_main(template, name, start_func, comp_type, comp_id, switch_contents):
-
-	template = template.replace("<MAIN_FUNC_NAME>", name)
-	template = template.replace("<COMP_TYPE>", comp_type)
-	template = template.replace("<COMP_START_FUNC>", start_func)
-	template = template.replace("<COMP_ID>", comp_id)
-	template = template.replace("<SWITCH_CONTENTS>", switch_contents)
-
-	return template	
 
 header_file = sys.argv[1]
 
@@ -45,7 +26,9 @@ component_header_file = open(header_file, 'r').read()
 
 # Open templates
 template_call_func = open("eventc_call_func.template.c", 'r').read()
+template_call_func_h = open("eventc_call_func.template.h", 'r').read()
 template_main = open("eventc_main.template.c", 'r').read()
+template_main_switch = open("eventc_main_switch.template.c", 'r').read()
 
 # Find the name of the component
 component_name = re.search("EVENTC\s*:\s*comp=(\w*)", component_header_file).group(1)
@@ -59,18 +42,26 @@ function_re = re.compile("""EVENTC_FUNCTION_RET\s*(\w*)\s*\(\s*(\w*)\s*\*\s*(\w*
 call_func_implemenations = []
 call_func_protos = []
 call_func_switch = []
-function_id = 0
+next_function_id = 0
 
+# Find all functions that can be called externally
 for m in function_re.finditer(component_header_file):
 
-	function_name_orig = m.group(1)
-	function_name = "CALL_" + function_name_orig
-	function_input_type = m.group(4)
-	function_id = function_id + 1
+	# Increase function id
+	next_function_id = next_function_id + 1
 
-	call_func_implemenations.append(gen_call_func(template_call_func, function_name, function_input_type, component_name, function_id))
-	call_func_protos.append(gen_call_proto(function_name, function_input_type))
-	call_func_switch.append(gen_call_switch(function_name_orig, function_input_type, function_id))
+	# Create template subsitutions
+	subs_dict = {}
+	subs_dict['ORIG_NAME'] = m.group(1)
+	subs_dict['NAME'] = "CALL_" + subs_dict['ORIG_NAME']
+	subs_dict['INPUT_TYPE'] = m.group(4)
+	subs_dict['FUNC_ID'] = "%d" % next_function_id
+	subs_dict['COMP_ID'] = component_name
+
+	# Create code for each function
+	call_func_implemenations.append(template_replace(template_call_func, subs_dict))
+	call_func_protos.append(template_replace(template_call_func_h, subs_dict))
+	call_func_switch.append(template_replace(template_main_switch, subs_dict))
 
 #print call_func_implemenations
 #print call_func_protos
@@ -99,7 +90,17 @@ for header in included_headers:
 
 # Main func
 out_c_file.write("\n\n///////////////////////////////\n// MAIN FUNC\n///////////////////////////////\n\n")
-out_c_file.write(gen_main(template_main, component_main_func, component_start_func, component_type, component_name, "\n".join(call_func_switch)))
+
+# Create template subsitutions
+subs_dict = {}
+
+subs_dict['MAIN_FUNC_NAME'] = component_main_func
+subs_dict['COMP_START_FUNC'] = component_start_func
+subs_dict['COMP_TYPE'] = component_type
+subs_dict['COMP_ID'] = component_name
+subs_dict['SWITCH_CONTENTS'] = "\n".join(call_func_switch)
+
+out_c_file.write(template_replace(template_main, subs_dict))
 
 # Call funcs
 out_c_file.write("\n\n///////////////////////////////\n// CALL FUNCS\n///////////////////////////////\n\n")
