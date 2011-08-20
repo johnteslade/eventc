@@ -12,6 +12,7 @@
 #include "time.h"
 #include "assert.h"
 #include "errno.h"
+#include "stdbool.h"
 
 /***************************************/
 // Types
@@ -21,7 +22,7 @@
 
 typedef struct
 {
-	int in_use;
+	bool in_use;
 	timed_event_call_t * event_details;
 } queued_timed_event_t;
 
@@ -110,7 +111,7 @@ static void send_ready_events(void)
 	/* Find a free row and add */
 	for (i = 0; i < MAX_TIMED_QUEUE; i++)
 	{
-		if (timed_queue[i].in_use == 1)
+		if (timed_queue[i].in_use == true)
 		{
 
 			/* Find earliest time in the list */
@@ -126,7 +127,7 @@ static void send_ready_events(void)
 				free(timed_queue[i].event_details);
 
 				memset(&(timed_queue[i]), 0x00, sizeof(timed_queue[i]));
-				timed_queue[i].in_use = 0;
+				timed_queue[i].in_use = false;
 			}
 		}
 	}
@@ -137,12 +138,12 @@ static int find_earliest_event(struct timespec * earliest_time)
 {
 
 	int i = 0; /* Loop counter */
-	int item_found = 0;
+	bool item_found = false; /* Is there an item in the queue */
 
 	/* Find a free row and add */
 	for (i = 0; i < MAX_TIMED_QUEUE; i++)
 	{
-		if (timed_queue[i].in_use == 1)
+		if (timed_queue[i].in_use == true)
 		{
 			/* Find earliest time in the list */
 			if ( (item_found == 0) || (timed_queue[i].event_details->secs < earliest_time->tv_sec) || ( (timed_queue[i].event_details->secs < earliest_time->tv_sec) && (timed_queue[i].event_details->nsecs < earliest_time->tv_nsec) ) )
@@ -150,7 +151,7 @@ static int find_earliest_event(struct timespec * earliest_time)
 				earliest_time->tv_sec = timed_queue[i].event_details->secs;
 				earliest_time->tv_nsec = timed_queue[i].event_details->nsecs;
 			}
-			item_found = 1;
+			item_found = true;
 		}
 	}
 
@@ -163,23 +164,23 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 {
 
 	int i = 0; /* Loop counter */
-	int item_added = 0;
+	bool item_added = false; /* Was the item added to the queue */
 
 	printf("%s: new timed event added.  Dest Comp: %d, Dest Func: %d, Time: %d %ld\n", __FUNCTION__, new_event_details->event_call->comp_id, new_event_details->event_call->function_id, new_event_details->secs, new_event_details->nsecs);
 	
 	/* Find a free row and add */
 	for (i = 0; i < MAX_TIMED_QUEUE; i++)
 	{
-		if (timed_queue[i].in_use == 0)
+		if (timed_queue[i].in_use == false)
 		{
 			timed_queue[i].event_details = new_event_details;
-			timed_queue[i].in_use = 1;
-			item_added = 1;
+			timed_queue[i].in_use = true;
+			item_added = true;
 			break;
 		}
 	}
 	
-	assert(item_added == 1);
+	assert(item_added == true);
 
 }
 
