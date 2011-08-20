@@ -4,11 +4,11 @@
 #include "eventc_timed.h"
 #include "eventc.h"
 
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "assert.h"
-#include "unistd.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <unistd.h>
 
 static void create_call_structure(
 	eventc_call_t ** call_struct,

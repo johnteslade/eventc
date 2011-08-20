@@ -4,15 +4,15 @@
 #include "eventc_component.h" /* TODO remove when mqueue create is in better place */
 #include "eventc.h"
 
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "assert.h"
-#include "unistd.h"
-#include "time.h"
-#include "assert.h"
-#include "errno.h"
-#include "stdbool.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <unistd.h>
+#include <time.h>
+#include <assert.h>
+#include <errno.h>
+#include <stdbool.h>
 
 /***************************************/
 // Types
