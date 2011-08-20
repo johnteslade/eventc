@@ -10,6 +10,7 @@ env.Append(LIBS = [
 source_files = [
 	"myprog.c",
 	"eventc_connections.c",
+	"eventc_funcqueue.c",
 	"Thread1.c",
 	"Thread1_autogen.c",
 	"Thread2.c",

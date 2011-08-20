@@ -85,6 +85,7 @@ out_c_file.write("//Autogen output : %s\n\n" % datetime.datetime.now().strftime(
 included_headers = [
 	header_file,
 	"eventc.h",
+	"eventc_funcqueue.h",
 	"model.h",
 	"stdio.h",
 	"stdlib.h",
