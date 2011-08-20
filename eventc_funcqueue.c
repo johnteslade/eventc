@@ -22,7 +22,7 @@ void eventc_funcqueue_add(
 	int function_id,
 	char * function_name,
 	int comp_id,
-	comp_t * sender_details, 
+	comp_t * sender, 
 	void * data,
 	int data_len
 )
@@ -32,12 +32,12 @@ void eventc_funcqueue_add(
 	int ret = -1; 
 	mqd_t recv_queue; 
 
-	printf("%s: %s inst:%d calling %s\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, function_name);
+	printf("%s: %s inst:%d calling %s\n", __FUNCTION__, sender->comp_name, sender->instance_id, function_name);
 
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
 	/* Find a receiver - prevent loopback calls */
-	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id, 0); 
+	recv_queue = eventc_connections_find_receiver(sender, call_struct->comp_id, false); 
 
 	/* Send the message */
 	ret = mq_send(recv_queue, (const char *)&call_struct, sizeof(call_struct), 0); 
@@ -50,7 +50,7 @@ void eventc_funcqueue_timed(
 	int function_id,
 	char * function_name,
 	int comp_id,
-	comp_t * sender_details, 
+	comp_t * sender, 
 	int secs,
 	long nsecs,
 	void * data,
@@ -64,12 +64,12 @@ void eventc_funcqueue_timed(
 	timed_event_call_t * timed_call_event = NULL; /* Time call struct */
 	struct timespec current_time = {0};
 
-	printf("%s: %s inst:%d timed call to %s - s:%d ns:%ld\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, function_name, secs, nsecs);
+	printf("%s: %s inst:%d timed call to %s - s:%d ns:%ld\n", __FUNCTION__, sender->comp_name, sender->instance_id, function_name, secs, nsecs);
 
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
 	/* Find a receiver */
-	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id, 1); 
+	recv_queue = eventc_connections_find_receiver(sender, call_struct->comp_id, true); 
 
 	/* Find out current time */
 	ret = clock_gettime(CLOCK_REALTIME, &current_time);

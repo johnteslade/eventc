@@ -14,6 +14,7 @@ Event c defined connection list
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 /***************************************/
 // Types
@@ -24,16 +25,16 @@ Event c defined connection list
 /* Pair of components - use full struct here to prevent memory problems */
 typedef struct
 {
-	int in_use;
+	bool in_use;
 	comp_t comp_1;
 	comp_t comp_2;
-} connection_pair;
+} connection_pair_t;
 
 /***************************************/
 // Local Vars
 /***************************************/
 
-static connection_pair connection_pair_list[MAX_CONNECTIONS] = {{0}};
+static connection_pair_t connection_table[MAX_CONNECTIONS] = {{0}};
 
 /***************************************/
 // Static protypes
@@ -47,7 +48,7 @@ static int eventc_connections_is_match(
 );
 
 static comp_t * find_reciever_in_table(
-	comp_t * sender_details, 
+	comp_t * sender, 
 	int dest_comp_id
 );
 
@@ -64,7 +65,7 @@ void eventc_connections_add(
 {
 
 	int i = 0; /* Loop counter */
-	int item_added = 0;
+	bool item_added = false; /* Was item added */
 
 	assert(EVENTC_IS_VALID_PTR(comp_1));
 	assert(EVENTC_IS_VALID_PTR(comp_2));
@@ -74,16 +75,16 @@ void eventc_connections_add(
 	/* Look for duplicate destinations */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
-		if (connection_pair_list[i].in_use != 0)
+		if (connection_table[i].in_use == true)
 		{
-			if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, comp_1->instance_id, comp_2->comp_id))
+			if (eventc_connections_is_match(&connection_table[i].comp_1, &connection_table[i].comp_2, comp_1->instance_id, comp_2->comp_id))
 			{
-				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_pair_list[i].comp_1.comp_name, connection_pair_list[i].comp_1.instance_id, connection_pair_list[i].comp_2.comp_name, connection_pair_list[i].comp_2.instance_id); 
+				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_table[i].comp_1.comp_name, connection_table[i].comp_1.instance_id, connection_table[i].comp_2.comp_name, connection_table[i].comp_2.instance_id); 
 				assert(0);
 			}
-			else if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, comp_2->instance_id, comp_1->comp_id))
+			else if (eventc_connections_is_match(&connection_table[i].comp_1, &connection_table[i].comp_2, comp_2->instance_id, comp_1->comp_id))
 			{
-				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_pair_list[i].comp_2.comp_name, connection_pair_list[i].comp_2.instance_id, connection_pair_list[i].comp_1.comp_name, connection_pair_list[i].comp_1.instance_id); 
+				printf("%s: Duplicate! Already in list sender %s inst:%d to %s inst: %d\n", __FUNCTION__, connection_table[i].comp_2.comp_name, connection_table[i].comp_2.instance_id, connection_table[i].comp_1.comp_name, connection_table[i].comp_1.instance_id); 
 				assert(0);
 			}
 		}
@@ -92,48 +93,46 @@ void eventc_connections_add(
 	/* Find a free row and add */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
-		if (connection_pair_list[i].in_use == 0)
+		if (connection_table[i].in_use == false)
 		{
-			memcpy(&(connection_pair_list[i].comp_1), comp_1, sizeof(*comp_1));
-			memcpy(&(connection_pair_list[i].comp_2), comp_2, sizeof(*comp_2));
-			connection_pair_list[i].in_use = 2;
-			item_added = 1;
+			memcpy(&(connection_table[i].comp_1), comp_1, sizeof(*comp_1));
+			memcpy(&(connection_table[i].comp_2), comp_2, sizeof(*comp_2));
+			connection_table[i].in_use = true;
+			item_added = true;
 			break;
 		}
 	}
 
-	assert(item_added == 1);
+	assert(item_added == true);
 
 }
 
 /* Find the queue for a reciever */
 mqd_t eventc_connections_find_receiver(
-	comp_t * sender_details, 
+	comp_t * sender, 
 	int dest_comp_id,
-	int allow_loopback
+	bool allow_loopback
 )
 {
-	
-	int i = 0; /* Loop counter */
 	comp_t * receiver = NULL; /* The found row */
 
-	printf("%s: sending from %s inst:%d to comp %d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, dest_comp_id);
+	printf("%s: sending from %s inst:%d to comp %d\n", __FUNCTION__, sender->comp_name, sender->instance_id, dest_comp_id);
 
 	/* Check for sending to self */
-	if (sender_details->comp_id == dest_comp_id)
+	if (sender->comp_id == dest_comp_id)
 	{
 		printf("%s: Loopback to self\n", __FUNCTION__);
-		assert(allow_loopback == 1);
-		receiver = sender_details;
+		assert(allow_loopback == true);
+		receiver = sender;
 	}
 	else
 	{
-		receiver = find_reciever_in_table(sender_details, dest_comp_id);
+		receiver = find_reciever_in_table(sender, dest_comp_id);
 	}
 
 	assert(EVENTC_IS_VALID_PTR(receiver));
 	
-	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, receiver->comp_name, receiver->instance_id);
+	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender->comp_name, sender->instance_id, receiver->comp_name, receiver->instance_id);
 
 	return receiver->queue_id;
 
@@ -145,7 +144,7 @@ mqd_t eventc_connections_find_receiver(
 
 /* Look for the receiver in the stored table */
 static comp_t * find_reciever_in_table(
-	comp_t * sender_details, 
+	comp_t * sender, 
 	int dest_comp_id
 )
 {
@@ -156,16 +155,16 @@ static comp_t * find_reciever_in_table(
 	/* Look at items in use and find the destination */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
-		if (connection_pair_list[i].in_use != 0)
+		if (connection_table[i].in_use == true)
 		{
-			if (eventc_connections_is_match(&connection_pair_list[i].comp_1, &connection_pair_list[i].comp_2, sender_details->instance_id, dest_comp_id))
+			if (eventc_connections_is_match(&connection_table[i].comp_1, &connection_table[i].comp_2, sender->instance_id, dest_comp_id))
 			{
-				receiver = &(connection_pair_list[i].comp_2);
+				receiver = &(connection_table[i].comp_2);
 				break;
 			}
-			else if (eventc_connections_is_match(&connection_pair_list[i].comp_2, &connection_pair_list[i].comp_1, sender_details->instance_id, dest_comp_id))
+			else if (eventc_connections_is_match(&connection_table[i].comp_2, &connection_table[i].comp_1, sender->instance_id, dest_comp_id))
 			{
-				receiver = &(connection_pair_list[i].comp_1);
+				receiver = &(connection_table[i].comp_1);
 				break;
 			}
 		}

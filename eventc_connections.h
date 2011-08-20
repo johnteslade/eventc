@@ -9,6 +9,8 @@ Public header file for eventc connections
 
 #include "eventc_types.h"
 
+#include <stdbool.h>
+
 void eventc_connections_add(
 	comp_t * comp_1, 
 	comp_t * comp_2
@@ -17,7 +19,7 @@ void eventc_connections_add(
 mqd_t eventc_connections_find_receiver(
 	comp_t * sender_details, 
 	int dest_comp_id,
-	int allow_loopback
+	bool allow_loopback
 );
 
 #endif /* eventc_connections_h */
