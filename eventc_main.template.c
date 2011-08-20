@@ -29,7 +29,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 		assert(bytes_read == sizeof(call_struct));
 		assert(call_struct->comp_id == <COMP_ID>);
 
-		printf("%s: mq recv\n", __FUNCTION__);
+//		printf("%s: mq recv\n", __FUNCTION__);
 
 		if (call_struct->data == NULL)
 		{

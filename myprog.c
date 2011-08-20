@@ -1,10 +1,13 @@
 
 
 #include <stdlib.h>
+#include <assert.h>
+#include <pthread.h>
 
 #include "eventc.h"
 #include "eventc_connections.h"
 #include "eventc_component.h"
+#include "eventc_timed.h"
 
 #include "model.h"
 #include "Thread1.h"
@@ -24,7 +27,21 @@ int main()
 	comp_t * thread_1 = NULL;
 	comp_t * thread_2 = NULL;
 	comp_t * thread_3 = NULL;
-	
+
+	/* Start the timed thread - TODO intetially don't join here.  TODO needs a better place for this */
+	{
+		int s;
+		pthread_attr_t attr;
+		pthread_t thread_id;
+
+		s = pthread_attr_init(&attr);
+
+		/* Create the new thread for this component */
+		s = pthread_create(&thread_id, &attr, eventc_timed_start, NULL);
+		assert(s == 0);
+	}
+
+
 	/* Create thread 1 */
 	{
 		thread_1 = thread_1_new();

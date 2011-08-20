@@ -43,15 +43,12 @@ void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
 
 	printf("%s: got %d %d\n", __FUNCTION__, struct_in->int1, struct_in->int2);
 	
-	// Slow it down slightly
-	sleep(1);
-
 	// Send message 
 	{
 		thread_2_input send_struct = {0};
 		send_struct.int1 = struct_in->int1 + 1;
 		send_struct.int2 = struct_in->int2 + 1;
-		CALL_thread_2_function(&(self->comp_details), &send_struct);
+		CALL_TIMED_thread_2_function(&(self->comp_details), &send_struct, 5, 0);
 	}	
 
 }

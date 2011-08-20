@@ -19,7 +19,6 @@
 
 static void start_thread(comp_t * comp_details);
 static mqd_t open_queue(int instance_id);
-static mqd_t create_thread_q(char * name);
 
 /***************************************/
 // Public

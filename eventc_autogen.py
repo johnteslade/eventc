@@ -54,6 +54,7 @@ for m in function_re.finditer(component_header_file):
 	subs_dict = {}
 	subs_dict['ORIG_NAME'] = m.group(1)
 	subs_dict['NAME'] = "CALL_" + subs_dict['ORIG_NAME']
+	subs_dict['TIMED_NAME'] = "CALL_TIMED_" + subs_dict['ORIG_NAME']
 	subs_dict['INPUT_TYPE'] = m.group(4)
 	subs_dict['FUNC_ID'] = "%d" % next_function_id
 	subs_dict['COMP_ID'] = component_name
