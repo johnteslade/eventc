@@ -1,6 +1,6 @@
 Import('env')
 
-env.Append(CCFLAGS = '-g')
+env.Append(CCFLAGS = '-g -Wall')
 
 env.Append(LIBS = [
 	'rt', # For mq

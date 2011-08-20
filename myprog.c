@@ -66,6 +66,8 @@ int main()
 	free(thread_1);
 	free(thread_2);
 
+	return 0;
+
 }
 
 static void init_component(comp_t * comp_details)

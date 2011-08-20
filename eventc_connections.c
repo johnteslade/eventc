@@ -25,7 +25,7 @@ typedef struct
 	comp_t comp_2;
 } connection_pair;
 
-static connection_pair connection_pair_list[MAX_CONNECTIONS] = {0};
+static connection_pair connection_pair_list[MAX_CONNECTIONS] = {{0}};
 
 static int eventc_connections_is_match(
 	comp_t * comp_sender, 
