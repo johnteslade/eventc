@@ -41,6 +41,7 @@ void eventc_connections_add(
 {
 
 	int i = 0; /* Loop counter */
+	int item_added = 0;
 
 	assert(EVENTC_IS_VALID_PTR(comp_1));
 	assert(EVENTC_IS_VALID_PTR(comp_2));
@@ -65,6 +66,7 @@ void eventc_connections_add(
 		}
 	}
 
+	/* Find a free row and add */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
 		if (connection_pair_list[i].in_use == 0)
@@ -72,9 +74,12 @@ void eventc_connections_add(
 			memcpy(&(connection_pair_list[i].comp_1), comp_1, sizeof(*comp_1));
 			memcpy(&(connection_pair_list[i].comp_2), comp_2, sizeof(*comp_2));
 			connection_pair_list[i].in_use = 2;
+			item_added = 1;
 			break;
 		}
 	}
+
+	assert(item_added == 1);
 
 }
 
