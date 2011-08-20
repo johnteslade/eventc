@@ -15,6 +15,8 @@ void eventc_component_start(comp_t * comp_details);
 
 void eventc_component_wait(comp_t * comp_details);
 
+mqd_t create_thread_q(char * name);
+
 #endif /* eventc_component_h */
 
 

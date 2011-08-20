@@ -70,6 +70,27 @@ void eventc_component_wait(comp_t * comp_details)
 
 }
 
+/******* Util func : TODO this should be in a better place ****/
+
+mqd_t create_thread_q(char * name)
+{
+
+    mqd_t mq;
+    struct mq_attr attr;
+
+    /* initialize the queue attributes */
+    attr.mq_flags = 0;
+    attr.mq_maxmsg = 10;
+    attr.mq_msgsize = sizeof(void *);
+    attr.mq_curmsgs = 0;
+
+    /* create the message queue */
+    mq = mq_open(name, O_CREAT | O_RDWR, 0644, &attr);
+    assert((mqd_t)-1 != mq);
+	return mq;
+
+}
+
 /***************************************/
 // Private
 /***************************************/
@@ -103,23 +124,4 @@ static mqd_t open_queue(int instance_id)
 
 }
 
-/******* Util funcs ****/
 
-static mqd_t create_thread_q(char * name)
-{
-
-    mqd_t mq;
-    struct mq_attr attr;
-
-    /* initialize the queue attributes */
-    attr.mq_flags = 0;
-    attr.mq_maxmsg = 10;
-    attr.mq_msgsize = sizeof(void *);
-    attr.mq_curmsgs = 0;
-
-    /* create the message queue */
-    mq = mq_open(name, O_CREAT | O_RDWR, 0644, &attr);
-    assert((mqd_t)-1 != mq);
-	return mq;
-
-}
