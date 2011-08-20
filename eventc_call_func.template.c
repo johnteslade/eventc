@@ -1,7 +1,10 @@
-void <NAME>(comp_t * comp_details, <INPUT_TYPE> * struct_in)
+void <NAME>(
+	comp_t * sender_details, 
+	<INPUT_TYPE> * struct_in
+)
 { 
 
-	// TODO create another function will the bulk of this code in it - only variables are comp_details, input type name and size
+	// TODO create another function will the bulk of this code in it - only variables are sender_details, input type name and size
 
 	<INPUT_TYPE> * tmp_struct = NULL; 
 	eventc_call_t * call_struct = NULL;
@@ -16,7 +19,7 @@ void <NAME>(comp_t * comp_details, <INPUT_TYPE> * struct_in)
 	memset(tmp_struct, 0x00, sizeof(*tmp_struct)); 
 	memcpy(tmp_struct, struct_in, sizeof(*tmp_struct)); 
 
-	recv_queue = eventc_connections_find_receiver(comp_details, <COMP_ID>); 
+	recv_queue = eventc_connections_find_receiver(sender_details, <COMP_ID>); 
 
 	call_struct->function_id = <FUNC_ID>;
 	call_struct->comp_id = <COMP_ID>;
