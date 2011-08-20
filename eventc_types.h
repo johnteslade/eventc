@@ -11,6 +11,7 @@ typedef void * (*pthread_start_routine)(void *);
 
 typedef struct {
 	int comp_id;
+	char * comp_name;
 	int instance_id;
 	mqd_t queue_id;
 	pthread_t thread_id;
@@ -35,6 +36,7 @@ typedef struct {
 #define EVENTC_MAIN_ROUTINE(x) (x)->comp_details.main_func
 #define EVENTC_SET_MAIN_ROUTINE(x, y) EVENTC_MAIN_ROUTINE(x) = (y);
 
+#define EVENTC_SET_COMP_T(x, in_comp_id, in_comp_name, in_main_func) (x)->comp_details.comp_id = (in_comp_id); (x)->comp_details.comp_name = (in_comp_name); (x)->comp_details.main_func = (new_self, in_main_func); 
 
 #endif /* eventc_types_h */
 

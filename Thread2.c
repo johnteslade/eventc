@@ -26,9 +26,7 @@ comp_t * thread_2_new(void)
 	new_self = malloc(sizeof(thread_2_comp_t));
 	assert(new_self != NULL);
 
-	EVENTC_SET_COMPONENT(new_self, THREAD_2);
-	
-	EVENTC_SET_MAIN_ROUTINE(new_self, &thread_2_main);
+	EVENTC_SET_COMP_T(new_self, THREAD_2, "Thread_2", &thread_2_main);
 
 	/* Return thread details */
 	return (comp_t *)new_self;
