@@ -73,12 +73,12 @@ void * eventc_timed_start(void * dummy)
 		{
 			printf("%s: timed event, waiting for %d %ld\n", __FUNCTION__, next_event.tv_sec, next_event.tv_nsec);
 			bytes_read = mq_timedreceive(timed_queue_id, (void *)&timed_event, sizeof(timed_event), NULL, &next_event);
-			assert( (bytes_read >= 0) || ( (bytes_read == -1) && (errno == ETIMEDOUT)) );
+			assert( (bytes_read == sizeof(timed_event)) || ( (bytes_read == -1) && (errno == ETIMEDOUT)) );
 		}
 		else
 		{
 			bytes_read = mq_receive(timed_queue_id, (void *)&timed_event, sizeof(timed_event), NULL);
-			assert(bytes_read >= 0);
+			assert(bytes_read == sizeof(timed_event));
 		}
 
 		/* If we have a new event add it to the queue */
