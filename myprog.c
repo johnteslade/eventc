@@ -70,10 +70,13 @@ int main()
 
 static void init_component(comp_t * comp_details)
 {
-	static int instance_id = 1; /* TODO move this to a better place */
+	static int instance_id = 999; /* TODO move this to a better place */
+
+	/* Set instance id */
+	comp_details->instance_id = instance_id++;
 
 	/* Open queue */
-	comp_details->queue_id = open_queue(instance_id++);
+	comp_details->queue_id = open_queue(comp_details->instance_id);
 
 	/* Start thread */
 	start_thread(comp_details);

@@ -35,7 +35,9 @@ void eventc_connections_add(
 
 	int i = 0; /* Loop counter */
 
-	printf("%s: adding connection between %d and %d\n", __FUNCTION__, comp_1->comp_id, comp_2->comp_id);
+	printf("%s: adding connection between %d (comp %d) and %d (comp %d)\n", __FUNCTION__, comp_1->instance_id, comp_1->comp_id, comp_2->instance_id, comp_2->comp_id);
+
+	/* TODO look for multiple matches */
 
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
@@ -58,19 +60,19 @@ mqd_t eventc_connections_find_receiver(
 	
 	int i = 0; /* Loop counter */
 
-	printf("%s: sending from %d to %d\n", __FUNCTION__, sender_details->comp_id, dest_comp_id);
+	printf("%s: sending from %d (comp %d) to comp %d\n", __FUNCTION__, sender_details->instance_id, sender_details->comp_id, dest_comp_id);
 
 	/* Look at items in use and find the destination */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
 	{
 		if (connection_pair_list[i].in_use != 0)
 		{
-			if ( (connection_pair_list[i].comp_1.comp_id == sender_details->comp_id) && 
+			if ( (connection_pair_list[i].comp_1.instance_id == sender_details->instance_id) && 
 				(connection_pair_list[i].comp_2.comp_id == dest_comp_id) )
 			{
 				return connection_pair_list[i].comp_2.queue_id;
 			}
-			else if ( (connection_pair_list[i].comp_2.comp_id == sender_details->comp_id) && 
+			else if ( (connection_pair_list[i].comp_2.instance_id == sender_details->instance_id) && 
 				(connection_pair_list[i].comp_1.comp_id == dest_comp_id) )
 			{
 				return connection_pair_list[i].comp_1.queue_id;
