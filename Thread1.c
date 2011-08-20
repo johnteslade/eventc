@@ -50,13 +50,21 @@ void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
 		send_struct.int2 = struct_in->int2 + 1;
 		CALL_TIMED_thread_2_function(&(self->comp_details), &send_struct, 5, 0);
 	}	
+	
+	// Send message to self
+	{
+		thread_1_input send_struct = {0};
+		send_struct.int1 = struct_in->int1 + 1;
+		send_struct.int2 = struct_in->int2 + 1;
+		CALL_TIMED_thread_1_function_1(&(self->comp_details), &send_struct, 1, 0);
+	}
 
 }
 
 void thread_1_function_1(thread_1_comp_t * self, thread_1_input * struct_in)
 {
 
-	printf("%s: got %d %d\n", __FUNCTION__, struct_in->int1, struct_in->int2);
+	printf("%s: LOOOOPBACK  got %d %d\n", __FUNCTION__, struct_in->int1, struct_in->int2);
 
 }
 	

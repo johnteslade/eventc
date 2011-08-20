@@ -16,7 +16,8 @@ void eventc_connections_add(
 
 mqd_t eventc_connections_find_receiver(
 	comp_t * sender_details, 
-	int dest_comp_id
+	int dest_comp_id,
+	int allow_loopback
 );
 
 #endif /* eventc_connections_h */

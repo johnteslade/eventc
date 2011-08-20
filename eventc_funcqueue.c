@@ -36,8 +36,8 @@ void eventc_funcqueue_add(
 
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
-	/* Find a receiver */
-	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id); 
+	/* Find a receiver - prevent loopback calls */
+	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id, 0); 
 
 	/* Send the message */
 	ret = mq_send(recv_queue, (const char *)&call_struct, sizeof(call_struct), 0); 
@@ -69,7 +69,7 @@ void eventc_funcqueue_timed(
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
 	/* Find a receiver */
-	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id); 
+	recv_queue = eventc_connections_find_receiver(sender_details, call_struct->comp_id, 1); 
 
 	/* Find out current time */
 	ret = clock_gettime(CLOCK_REALTIME, &current_time);

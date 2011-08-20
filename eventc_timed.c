@@ -70,6 +70,7 @@ void * eventc_timed_start(void * dummy)
 
 		if (events_waiting)
 		{
+			printf("%s: timed event, waiting for %d %ld\n", __FUNCTION__, next_event.tv_sec, next_event.tv_nsec);
 			bytes_read = mq_timedreceive(timed_queue_id, (void *)&timed_event, sizeof(timed_event), NULL, &next_event);
 			assert( (bytes_read >= 0) || ( (bytes_read == -1) && (errno == ETIMEDOUT)) );
 		}
@@ -116,7 +117,7 @@ static void send_ready_events(void)
 			if ( (timed_queue[i].event_details->secs <= current_time.tv_sec) && (timed_queue[i].event_details->nsecs <= current_time.tv_nsec) )
 			{
 
-				printf("%s: timed event now being released\n", __FUNCTION__);
+				printf("%s: timed event now being released Dest Comp: %d, Dest Func: %d\n", __FUNCTION__, timed_queue[i].event_details->event_call->comp_id, timed_queue[i].event_details->event_call->function_id);
 
 				/* Send the message */
 				ret = mq_send(timed_queue[i].event_details->dest_queue_id, (const char *)&timed_queue[i].event_details->event_call, sizeof(timed_queue[i].event_details->event_call), 0); 
@@ -144,7 +145,7 @@ static int find_earliest_event(struct timespec * earliest_time)
 		if (timed_queue[i].in_use == 1)
 		{
 			/* Find earliest time in the list */
-			if ( (item_found == 0) || ( (timed_queue[i].event_details->secs < earliest_time->tv_sec) && (timed_queue[i].event_details->nsecs < earliest_time->tv_nsec) ) )
+			if ( (item_found == 0) || (timed_queue[i].event_details->secs < earliest_time->tv_sec) || ( (timed_queue[i].event_details->secs < earliest_time->tv_sec) && (timed_queue[i].event_details->nsecs < earliest_time->tv_nsec) ) )
 			{
 				earliest_time->tv_sec = timed_queue[i].event_details->secs;
 				earliest_time->tv_nsec = timed_queue[i].event_details->nsecs;
@@ -164,8 +165,8 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 	int i = 0; /* Loop counter */
 	int item_added = 0;
 
-	printf("%s: new timed event added for %d %ld\n", __FUNCTION__, new_event_details->secs, new_event_details->nsecs);
-
+	printf("%s: new timed event added.  Dest Comp: %d, Dest Func: %d, Time: %d %ld\n", __FUNCTION__, new_event_details->event_call->comp_id, new_event_details->event_call->function_id, new_event_details->secs, new_event_details->nsecs);
+	
 	/* Find a free row and add */
 	for (i = 0; i < MAX_TIMED_QUEUE; i++)
 	{

@@ -15,6 +15,10 @@ Event c defined connection list
 #include <stdio.h>
 #include <string.h>
 
+/***************************************/
+// Types
+/***************************************/
+
 #define MAX_CONNECTIONS 10
 
 /* Pair of components - use full struct here to prevent memory problems */
@@ -25,7 +29,15 @@ typedef struct
 	comp_t comp_2;
 } connection_pair;
 
+/***************************************/
+// Local Vars
+/***************************************/
+
 static connection_pair connection_pair_list[MAX_CONNECTIONS] = {{0}};
+
+/***************************************/
+// Static protypes
+/***************************************/
 
 static int eventc_connections_is_match(
 	comp_t * comp_sender, 
@@ -34,6 +46,17 @@ static int eventc_connections_is_match(
 	int dest_comp_id
 );
 
+static comp_t * find_reciever_in_table(
+	comp_t * sender_details, 
+	int dest_comp_id
+);
+
+/***************************************/
+// Public
+/***************************************/
+
+
+/* Creates a connection */
 void eventc_connections_add(
 	comp_t * comp_1, 
 	comp_t * comp_2
@@ -83,9 +106,11 @@ void eventc_connections_add(
 
 }
 
+/* Find the queue for a reciever */
 mqd_t eventc_connections_find_receiver(
 	comp_t * sender_details, 
-	int dest_comp_id
+	int dest_comp_id,
+	int allow_loopback
 )
 {
 	
@@ -93,6 +118,40 @@ mqd_t eventc_connections_find_receiver(
 	comp_t * receiver = NULL; /* The found row */
 
 	printf("%s: sending from %s inst:%d to comp %d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, dest_comp_id);
+
+	/* Check for sending to self */
+	if (sender_details->comp_id == dest_comp_id)
+	{
+		printf("%s: Loopback to self\n", __FUNCTION__);
+		assert(allow_loopback == 1);
+		receiver = sender_details;
+	}
+	else
+	{
+		receiver = find_reciever_in_table(sender_details, dest_comp_id);
+	}
+
+	assert(EVENTC_IS_VALID_PTR(receiver));
+	
+	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, receiver->comp_name, receiver->instance_id);
+
+	return receiver->queue_id;
+
+}
+
+/***************************************/
+// Private
+/***************************************/
+
+/* Look for the receiver in the stored table */
+static comp_t * find_reciever_in_table(
+	comp_t * sender_details, 
+	int dest_comp_id
+)
+{
+	
+	int i = 0; /* Loop counter */
+	comp_t * receiver = NULL; /* The found row */
 
 	/* Look at items in use and find the destination */
 	for (i = 0; i < MAX_CONNECTIONS; i++)
@@ -111,12 +170,8 @@ mqd_t eventc_connections_find_receiver(
 			}
 		}
 	}
-	
-	assert(EVENTC_IS_VALID_PTR(receiver));
-	
-	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender_details->comp_name, sender_details->instance_id, receiver->comp_name, receiver->instance_id);
 
-	return receiver->queue_id;
+	return receiver;
 
 }
 
