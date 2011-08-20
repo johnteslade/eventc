@@ -5,7 +5,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 	
 	printf("%s: top\n", __FUNCTION__);
 	
-	assert(start_ptr != NULL);
+	assert(EVENTC_IS_VALID_PTR(start_ptr));
 
 	local_attr = (<COMP_TYPE>*)start_ptr; 
 

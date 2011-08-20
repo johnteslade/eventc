@@ -47,7 +47,7 @@ void eventc_component_start(comp_t * comp_details)
 	eventc_call_t * call_struct = NULL;
 
 	call_struct = malloc(sizeof(*call_struct));
-	assert(call_struct != NULL);
+	assert(EVENTC_IS_VALID_PTR(call_struct));
 
 	// Fire a NULL pointer at the component to start it
 	call_struct->function_id = 0;

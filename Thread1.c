@@ -24,7 +24,7 @@ comp_t * thread_1_new(void)
 
 	/* Malloc space for component details */
 	new_self = malloc(sizeof(thread_1_comp_t));
-	assert(new_self != NULL);
+	assert(EVENTC_IS_VALID_PTR(new_self));
 
 	EVENTC_SET_COMP_T(new_self, THREAD_1, "Thread_1", &thread_1_main);
 
