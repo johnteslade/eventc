@@ -110,7 +110,7 @@ static void send_ready_events(void)
 	assert(ret == 0);
 
 	/* Find a free row and add */
-	for (i = 0; i < MAX_TIMED_QUEUE; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(timed_queue); i++)
 	{
 		if (timed_queue[i].in_use == true)
 		{
@@ -142,7 +142,7 @@ static int find_earliest_event(struct timespec * earliest_time)
 	bool item_found = false; /* Is there an item in the queue */
 
 	/* Find a free row and add */
-	for (i = 0; i < MAX_TIMED_QUEUE; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(timed_queue); i++)
 	{
 		if (timed_queue[i].in_use == true)
 		{
@@ -170,7 +170,7 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 	printf("%s: new timed event added.  Dest Comp: %d, Dest Func: %d, Time: %d %ld\n", __FUNCTION__, new_event_details->event_call->comp_id, new_event_details->event_call->function_id, new_event_details->secs, new_event_details->nsecs);
 	
 	/* Find a free row and add */
-	for (i = 0; i < MAX_TIMED_QUEUE; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(timed_queue); i++)
 	{
 		if (timed_queue[i].in_use == false)
 		{

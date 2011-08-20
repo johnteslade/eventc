@@ -73,7 +73,7 @@ void eventc_connections_add(
 	printf("%s: adding connection between %s inst:%d and %s inst:%d\n", __FUNCTION__, comp_1->comp_name, comp_1->instance_id, comp_2->comp_name, comp_2->instance_id);
 
 	/* Look for duplicate destinations */
-	for (i = 0; i < MAX_CONNECTIONS; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(connection_table); i++)
 	{
 		if (connection_table[i].in_use == true)
 		{
@@ -91,7 +91,7 @@ void eventc_connections_add(
 	}
 
 	/* Find a free row and add */
-	for (i = 0; i < MAX_CONNECTIONS; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(connection_table); i++)
 	{
 		if (connection_table[i].in_use == false)
 		{
@@ -153,7 +153,7 @@ static comp_t * find_reciever_in_table(
 	comp_t * receiver = NULL; /* The found row */
 
 	/* Look at items in use and find the destination */
-	for (i = 0; i < MAX_CONNECTIONS; i++)
+	for (i = 0; i < EVENTC_ARRAY_SIZE(connection_table); i++)
 	{
 		if (connection_table[i].in_use == true)
 		{
