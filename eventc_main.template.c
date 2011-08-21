@@ -33,21 +33,26 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 
 //		printf("%s: mq recv\n", __FUNCTION__);
 
-		if (call_struct->data == NULL)
+		/* Look at the type of the call */
+		switch (call_struct->call_type)
 		{
-			<COMP_START_FUNC>(local_attr);
-		}
-		else
-		{
+			
+			case EVENTC_START:
+				<COMP_START_FUNC>(local_attr);
+				break;
 
-			switch (call_struct->function_id)
-			{
-				<SWITCH_CONTENTS>
-				default:
-					assert(0);
-			}
+			
+			case EVENTC_DATA_CALL:
 
-			free(call_struct->data);
+				switch (call_struct->function_id)
+				{
+					<SWITCH_CONTENTS>
+					default:
+						assert(0);
+				}
+
+				free(call_struct->data);
+				break;
 		}
 		
 		free(call_struct);

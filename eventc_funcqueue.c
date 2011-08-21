@@ -103,6 +103,7 @@ static void create_call_structure(
 	(*call_struct) = malloc(sizeof(**call_struct));
 	assert(EVENTC_IS_VALID_PTR(*call_struct));
 	EVENTC_INIT_STRUCT(**call_struct, EVENTC_STRUCT_call_t);
+	(*call_struct)->call_type = EVENTC_DATA_CALL;
 	(*call_struct)->function_id = function_id;
 	(*call_struct)->comp_id = comp_id;
 

@@ -24,10 +24,17 @@ enum EVENTC_STRUCTS
 
 #define EVENTC_ASSERT_CORRECT_STRUCT(x, y) assert((x).eventc_guard == EVENTC_GUARD_VALUE); assert((x).eventc_struct_type == (y));
 
-
+/* Type of call being made */
+typedef enum EVENTC_CALL
+{
+	EVENTC_DATA_CALL,
+	EVENTC_START,
+	EVENTC_END
+} EVENTC_CALL_E;
 
 typedef void * (*pthread_start_routine)(void *);
 
+/* Base component struct */
 typedef struct {
 	EVENTC_STRUCT_START
 	int comp_id;
@@ -42,12 +49,11 @@ typedef struct {
 /* Type used to send a call to another component */
 typedef struct {
 	EVENTC_STRUCT_START
+	EVENTC_CALL_E call_type;
 	int function_id;
 	int comp_id;
 	void * data;
 } eventc_call_t;
-
-
 
 
 #define EVENTC_COMP_STRUCT_START comp_t comp_details; /* Required as first element of compeont structs.  Allows all components to contain hidden elements. */
