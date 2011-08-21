@@ -35,6 +35,7 @@ component_name = re.search("EVENTC\s*:\s*comp=(\w*)", component_header_file).gro
 component_type = re.search("EVENTC\s*:\s*comp_type=(\w*)", component_header_file).group(1)
 component_main_func = re.search("EVENTC_COMP_MAIN\s*(\w*)\s*\(", component_header_file).group(1)
 component_start_func = re.search("EVENTC_COMP_START\s*(\w*)\s*\(", component_header_file).group(1)
+component_end_func = re.search("EVENTC_COMP_END\s*(\w*)\s*\(", component_header_file).group(1)
 
 # Regex to find the call functions
 function_re = re.compile("""EVENTC_FUNCTION_RET\s*(\w*)\s*\(\s*(\w*)\s*\*\s*(\w*)\s*,\s*(\w*)\s*\*\s*(\w*)\s*\)\s*;""")
@@ -97,6 +98,7 @@ subs_dict = {}
 
 subs_dict['MAIN_FUNC_NAME'] = component_main_func
 subs_dict['COMP_START_FUNC'] = component_start_func
+subs_dict['COMP_END_FUNC'] = component_end_func
 subs_dict['COMP_TYPE'] = component_type
 subs_dict['COMP_ID'] = component_name
 subs_dict['SWITCH_CONTENTS'] = "\n".join(call_func_switch)

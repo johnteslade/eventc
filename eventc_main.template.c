@@ -1,7 +1,8 @@
 void * <MAIN_FUNC_NAME>(void * start_ptr)
 {
 
-	<COMP_TYPE> * local_attr = NULL;
+	<COMP_TYPE> * local_attr = NULL; /* store the local thread attributes */
+	bool thread_running = true; /* is the thread still running? */
 	
 	printf("%s: top\n", __FUNCTION__);
 	
@@ -15,7 +16,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 	EVENTC_ASSERT_CORRECT_STRUCT(local_attr->comp_details, EVENTC_STRUCT_comp_t);
 	assert(EVENTC_COMPONENT(local_attr) == <COMP_ID>);
 
-	while (1)
+	while (thread_running)
 	{
 
 		eventc_call_t * call_struct = NULL;
@@ -41,6 +42,10 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 				<COMP_START_FUNC>(local_attr);
 				break;
 
+			case EVENTC_END:
+				<COMP_END_FUNC>(local_attr);
+				thread_running = false;
+				break;
 			
 			case EVENTC_DATA_CALL:
 
@@ -60,5 +65,7 @@ void * <MAIN_FUNC_NAME>(void * start_ptr)
 	}
 
 	free(local_attr);
+
+	return NULL;
 
 }

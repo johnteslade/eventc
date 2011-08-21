@@ -23,6 +23,10 @@ typedef struct
 
 EVENTC_COMP_START thread_2_start(thread_2_comp_t * self);
 
+// End
+
+EVENTC_COMP_END thread_2_end(thread_2_comp_t * self);
+
 // Main
 
 EVENTC_COMP_MAIN thread_2_main(void * start_ptr);

@@ -47,6 +47,11 @@ void thread_2_start(thread_2_comp_t * self)
 
 }
 
+void thread_2_end(thread_2_comp_t * self)
+{
+	printf("%s: end\n", __FUNCTION__);
+}
+
 void thread_2_function(thread_2_comp_t * self, thread_2_input * struct_in)
 {
 

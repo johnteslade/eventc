@@ -38,6 +38,11 @@ void thread_1_start(thread_1_comp_t * self)
 	printf("%s: start\n", __FUNCTION__);
 }
 
+void thread_1_end(thread_1_comp_t * self)
+{
+	printf("%s: end\n", __FUNCTION__);
+}
+
 void thread_1_function(thread_1_comp_t * self, thread_1_input * struct_in)
 {
 
