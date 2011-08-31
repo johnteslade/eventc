@@ -75,6 +75,12 @@ typedef struct {
 #define EVENTC_MAIN_ROUTINE(x) (x)->comp_details.main_func
 #define EVENTC_SET_MAIN_ROUTINE(x, y) EVENTC_MAIN_ROUTINE(x) = (y);
 
+/* Dynamically creates a new component */
+#define EVENTC_NEW_COMPONENT(x, in_comp_id, in_comp_name, in_main_func) \
+	(x) = malloc(sizeof(*(x))); \
+	assert(EVENTC_IS_VALID_PTR((x))); \
+	EVENTC_SET_COMP_T((x), in_comp_id, in_comp_name, in_main_func);
+
 #define EVENTC_SET_COMP_T(x, in_comp_id, in_comp_name, in_main_func) \
 	EVENTC_INIT_STRUCT((x)->comp_details, EVENTC_STRUCT_comp_t) \
 	(x)->comp_details.comp_id = (in_comp_id); \

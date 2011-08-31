@@ -22,11 +22,7 @@ comp_t * thread_1_new(void)
 	
 	printf("%s: top\n", __FUNCTION__);
 
-	/* Malloc space for component details */
-	new_self = malloc(sizeof(thread_1_comp_t));
-	assert(EVENTC_IS_VALID_PTR(new_self));
-
-	EVENTC_SET_COMP_T(new_self, THREAD_1, "Thread_1", &thread_1_main);
+	EVENTC_NEW_COMPONENT(new_self, THREAD_1, "Thread_1", &thread_1_main);
 
 	/* Return thread details */
 	return (comp_t *)new_self;
