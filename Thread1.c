@@ -16,8 +16,6 @@
 comp_t * thread_1_new(void)
 {
 
-	/* TODO this can be broken apart so it just does component specific items */
-
 	thread_1_comp_t * new_self = NULL;
 	
 	printf("%s: top\n", __FUNCTION__);
