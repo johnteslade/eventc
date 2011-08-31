@@ -12,6 +12,7 @@ source_files = [
 	"eventc_connections.c",
 	"eventc_funcqueue.c",
 	"eventc_timed.c",
+	"eventc_main.c",
 	"eventc_component.c",
 	"Thread1.c",
 	"Thread1_autogen.c",
