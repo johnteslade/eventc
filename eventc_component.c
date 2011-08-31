@@ -12,6 +12,7 @@
 #include <mqueue.h>
 
 #include "eventc.h"
+#include "eventc_component.h"
 
 /***************************************/
 // Static protypes
@@ -30,6 +31,8 @@ static int next_instance_id = 1000; /* The next instance ID to use */
 // Public
 /***************************************/
 
+/* Initialise a component */
+// TODO make private
 void eventc_component_init(comp_t * comp_details)
 {
 
@@ -57,10 +60,20 @@ void eventc_component_addsub(comp_t * comp_details, comp_t * sub_comp)
 
 }
 
+/* Start all sub components */
+void eventc_component_startsub(comp_t * comp_details)
+{
+	int i = 0; /* loop counter */
+
+	for (i = 0; i < comp_details->subcomponents.count; i++)
+	{
+		eventc_component_start(comp_details->subcomponents.components[i]);
+	}
+}
 /* Initialise all sub components */
 void eventc_component_initsub(comp_t * comp_details)
 {
-	int i = 0;
+	int i = 0; /* loop counter */
 
 	for (i = 0; i < comp_details->subcomponents.count; i++)
 	{
@@ -68,6 +81,8 @@ void eventc_component_initsub(comp_t * comp_details)
 	}
 }
 
+/* Starts a component */
+// TODO make private
 void eventc_component_start(comp_t * comp_details)
 {
 

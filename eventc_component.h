@@ -20,6 +20,7 @@ mqd_t create_thread_q(char * name);
 void eventc_component_addsub(comp_t * comp_details, comp_t * sub_comp);
 
 void eventc_component_initsub(comp_t * comp_details);
+void eventc_component_startsub(comp_t * comp_details);
 
 #endif /* eventc_component_h */
 

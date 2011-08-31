@@ -55,7 +55,7 @@ int main()
 
 	/* Create thread 3 */
 	thread_3 = thread_2_new();
-	eventc_component_addsub(&outer_thread, thread_3);
+//	eventc_component_addsub(&outer_thread, thread_3);
 
 	/* Init components */
 	eventc_component_initsub(&outer_thread);
@@ -65,8 +65,7 @@ int main()
 	//eventc_connections_add(thread_1, thread_3);
 
 	/* Start all components */
-	eventc_component_start(thread_1);	
-	eventc_component_start(thread_2);	
+	eventc_component_startsub(&outer_thread);	
 
 	/* Wait the main program on these threads */
 	// TODO sort this out - we cannot wait on all threads to finish
