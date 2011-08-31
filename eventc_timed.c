@@ -39,7 +39,7 @@ static mqd_t timed_queue_id; /* Queue id for timed messages */
 /***************************************/
 
 static void send_ready_events(void);
-static int find_earliest_event(struct timespec * earliest_time);
+static bool find_earliest_event(struct timespec * earliest_time);
 static void add_timed_event(timed_event_call_t * new_event_details);
 static void remove_timed_event(int row);
 
