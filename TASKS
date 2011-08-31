@@ -1,0 +1,20 @@
+List of outstanding tasks
+---------------------------------
+
+Doxygen comments
+
+
+Cunit Tests
+- Create a generic framework for the tests
+
+Create main functions
+
+Move code into source directory and create an eventc library
+
+Wrap the mqueue functions (will make testing easier)
+
+Move autogen code into scons
+
+Autogen into separate directory
+
+
