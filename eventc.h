@@ -26,6 +26,11 @@ mqd_t find_receiver_queue(comp_t * sender_details, int dest_comp_id);
 
 #define EVENTC_ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
+
+#define EVENTC_FIRST_COMPONENT_START 10
+
+#define EVENTC_MAIN_COMPONENT_ID 1
+
 #endif /* eventc_h */
 
 
