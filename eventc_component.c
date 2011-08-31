@@ -46,6 +46,28 @@ void eventc_component_init(comp_t * comp_details)
 
 }
 
+/* Adds a sub component to the list */
+void eventc_component_addsub(comp_t * comp_details, comp_t * sub_comp)
+{
+
+	comp_details->subcomponents.count++;
+	comp_details->subcomponents.components = realloc(comp_details->subcomponents.components, sizeof(comp_t *) * comp_details->subcomponents.count);
+
+	comp_details->subcomponents.components[comp_details->subcomponents.count - 1] = sub_comp;
+
+}
+
+/* Initialise all sub components */
+void eventc_component_initsub(comp_t * comp_details)
+{
+	int i = 0;
+
+	for (i = 0; i < comp_details->subcomponents.count; i++)
+	{
+		eventc_component_init(comp_details->subcomponents.components[i]);
+	}
+}
+
 void eventc_component_start(comp_t * comp_details)
 {
 

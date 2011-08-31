@@ -27,6 +27,8 @@ int main()
 	comp_t * thread_1 = NULL;
 	comp_t * thread_2 = NULL;
 	comp_t * thread_3 = NULL;
+	
+	comp_t outer_thread = {0}; /* temp outer componennt TODO remove */
 
 	/* Start the timed thread - TODO intetially don't join here.  TODO needs a better place for this */
 	{
@@ -42,23 +44,21 @@ int main()
 	}
 
 
+
 	/* Create thread 1 */
-	{
-		thread_1 = thread_1_new();
-		eventc_component_init(thread_1);	
-	}
+	thread_1 = thread_1_new();
+	eventc_component_addsub(&outer_thread, thread_1);
 
 	/* Create thread 2 */
-	{
-		thread_2 = thread_2_new();
-		eventc_component_init(thread_2);	
-	}
+	thread_2 = thread_2_new();
+	eventc_component_addsub(&outer_thread, thread_2);
 
 	/* Create thread 3 */
-	{
-		thread_3 = thread_2_new();
-		eventc_component_init(thread_3);	
-	}
+	thread_3 = thread_2_new();
+	eventc_component_addsub(&outer_thread, thread_3);
+
+	/* Init components */
+	eventc_component_initsub(&outer_thread);
 
 	/* Add connection */
 	eventc_connections_add(thread_1, thread_2);
