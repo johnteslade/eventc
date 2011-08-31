@@ -37,6 +37,7 @@ typedef void * (*pthread_start_routine)(void *);
 /* Base component struct */
 typedef struct {
 	EVENTC_STRUCT_START
+	bool init; /* TODO initilaise this and check throughout */
 	int comp_id;
 	char * comp_name;
 	int instance_id;
