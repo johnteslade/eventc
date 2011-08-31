@@ -69,6 +69,8 @@ typedef struct {
 
 /* TODO create macros to access parts of the structure - based on the name of the first element */
 
+#define EVENTC_COMP_DETAILS(x) &((x)->comp_details)
+
 #define EVENTC_COMPONENT(x) (x)->comp_details.comp_id
 #define EVENTC_SET_COMPONENT(x, y) EVENTC_COMPONENT(x) = (y);
 

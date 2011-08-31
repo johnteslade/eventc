@@ -17,6 +17,8 @@ source_files = [
 	"Thread1_autogen.c",
 	"Thread2.c",
 	"Thread2_autogen.c",
+	"Thread_Main.c",
+	"Thread_Main_autogen.c",
 ]
 
 env.Program(

@@ -10,8 +10,7 @@
 #include "eventc_timed.h"
 
 #include "model.h"
-#include "Thread1.h"
-#include "Thread2.h"
+#include "Thread_Main.h"
 
 /***************************************/
 // Static protypes
@@ -24,11 +23,8 @@
 int main()
 {
 	
-	comp_t * thread_1 = NULL;
-	comp_t * thread_2 = NULL;
-	comp_t * thread_3 = NULL;
-	
-	comp_t outer_thread = {0}; /* temp outer componennt TODO remove */
+	comp_t * inner_thread = NULL;
+	comp_t outer_thread = {0}; /* TODO move this */
 
 	/* Start the timed thread - TODO intetially don't join here.  TODO needs a better place for this */
 	{
@@ -44,37 +40,22 @@ int main()
 	}
 
 
-
 	/* Create thread 1 */
-	thread_1 = thread_1_new();
-	eventc_component_addsub(&outer_thread, thread_1);
-
-	/* Create thread 2 */
-	thread_2 = thread_2_new();
-	eventc_component_addsub(&outer_thread, thread_2);
-
-	/* Create thread 3 */
-	thread_3 = thread_2_new();
-//	eventc_component_addsub(&outer_thread, thread_3);
+	inner_thread = thread_main_new();
+	eventc_component_addsub(&outer_thread, inner_thread);
 
 	/* Init components */
 	eventc_component_initsub(&outer_thread);
-
-	/* Add connection */
-	eventc_connections_add(thread_1, thread_2);
-	//eventc_connections_add(thread_1, thread_3);
 
 	/* Start all components */
 	eventc_component_startsub(&outer_thread);	
 
 	/* Wait the main program on these threads */
 	// TODO sort this out - we cannot wait on all threads to finish
-	eventc_component_wait(thread_1);
-	eventc_component_wait(thread_2);
+	eventc_component_wait(inner_thread);
 
 	/* Free components now - TODO need a clear function on each component */
-	free(thread_1);
-	free(thread_2);
+	free(inner_thread);
 
 	return 0;
 

@@ -98,6 +98,8 @@ void eventc_component_start(comp_t * comp_details)
 	call_struct->comp_id = comp_details->comp_id;
 	call_struct->call_type = EVENTC_START;
 
+	printf("%s: Going to start %s\n", __FUNCTION__, comp_details->comp_name);
+
 	ret = mq_send(comp_details->queue_id, (const char *)&call_struct, sizeof(call_struct), 0); 
 //	printf("ret = %d, errno = %d (%s)\n", ret, errno, strerror(errno));
 	assert(ret == 0);
