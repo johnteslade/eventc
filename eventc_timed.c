@@ -41,6 +41,7 @@ static mqd_t timed_queue_id; /* Queue id for timed messages */
 static void send_ready_events(void);
 static int find_earliest_event(struct timespec * earliest_time);
 static void add_timed_event(timed_event_call_t * new_event_details);
+static void remove_timed_event(int row);
 
 /***************************************/
 // Public
@@ -124,14 +125,28 @@ static void send_ready_events(void)
 				/* Send the message */
 				ret = mq_send(timed_queue[i].event_details->dest_queue_id, (const char *)&timed_queue[i].event_details->event_call, sizeof(timed_queue[i].event_details->event_call), 0); 
 				assert(ret == 0); 
-			
-				free(timed_queue[i].event_details);
-
-				memset(&(timed_queue[i]), 0x00, sizeof(timed_queue[i]));
-				timed_queue[i].in_use = false;
+		
+				/* Remove this row as no longer needed */
+				remove_timed_event(i);
 			}
 		}
 	}
+}
+
+/* Removes the row from the table */
+static void remove_timed_event(int row)
+{
+
+	assert(row >= 0);
+	assert(row < EVENTC_ARRAY_SIZE(timed_queue));	
+	
+	assert(timed_queue[row].in_use == true);
+
+	/* Free and clear the row */
+	free(timed_queue[row].event_details);
+	memset(&(timed_queue[row]), 0x00, sizeof(timed_queue[row]));
+	timed_queue[row].in_use = false;
+
 }
 
 /* Finds the earliest time in the queue list, return 0 if there are no items */
