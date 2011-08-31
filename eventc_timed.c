@@ -213,8 +213,11 @@ static void TEST_find_earliest(void)
 {
 
 	#define EVENT1_SECS 10
+	#define EVENT1_NSECS 1000
 	#define EVENT2_SECS 20
+	#define EVENT2_NSECS 10
 	#define EVENT3_SECS 5
+	#define EVENT3_NSECS 20000
 
 	timed_event_call_t event1;
 	timed_event_call_t event2;
@@ -225,33 +228,43 @@ static void TEST_find_earliest(void)
 	// Create the events
 	event1.event_call = malloc(sizeof(*event1.event_call));
 	event1.secs = EVENT1_SECS;
+	event1.nsecs = EVENT1_NSECS;
 	event1.event_call->comp_id = 1;
 
 	event2.event_call = malloc(sizeof(*event2.event_call));
 	event2.secs = EVENT2_SECS;
+	event2.nsecs = EVENT2_NSECS;
 	event2.event_call->comp_id = 2;
 
 	event3.event_call = malloc(sizeof(*event3.event_call));
 	event3.secs = EVENT3_SECS;
+	event3.nsecs = EVENT3_NSECS;
 	event3.event_call->comp_id = 3;
-	
-	// Add first event and check earliest time
+
+	// Check no events 
+	result = find_earliest_event(&earliest_time);
+	CU_ASSERT_FALSE(result);
+
+	// Add first event - this must be the earliest now
 	add_timed_event(&event1);
 	result = find_earliest_event(&earliest_time);
 	CU_ASSERT_TRUE(result);
 	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT1_SECS);
+	CU_ASSERT_EQUAL(earliest_time.tv_nsec, EVENT1_NSECS);
 	
 	// Add event 2 - earliest should still be event 1
 	add_timed_event(&event2);
 	result = find_earliest_event(&earliest_time);
 	CU_ASSERT_TRUE(result);
 	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT1_SECS);
+	CU_ASSERT_EQUAL(earliest_time.tv_nsec, EVENT1_NSECS);
 	
 	// Add event 3 - earliest should now be event 3
 	add_timed_event(&event3);
 	result = find_earliest_event(&earliest_time);
 	CU_ASSERT_TRUE(result);
 	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT3_SECS);
+	CU_ASSERT_EQUAL(earliest_time.tv_nsec, EVENT3_NSECS);
 
 }
 
@@ -267,7 +280,8 @@ int main()
 
 	/* add a suite to the registry */
 	pSuite = CU_add_suite("Suite_1", NULL, NULL);
-	if (NULL == pSuite) {
+	if (NULL == pSuite) 
+	{
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
