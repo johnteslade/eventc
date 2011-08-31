@@ -47,14 +47,26 @@ static void remove_timed_event(int row);
 // Public
 /***************************************/
 
-/* Returns the mqueue */
-mqd_t eventc_timed_get_q(void)
+/**
+ * Get the timed queue details
+ *
+ * @return The queue reference
+ */
+mqd_t eventc_timed_get_q(
+	void
+)
 {
 	return timed_queue_id;
 }
 
-/* Thread start point */
-void * eventc_timed_start(void * dummy)
+/**
+ * Start point of the timed thread
+ *
+ * @return The queue reference
+ */
+void * eventc_timed_start(
+	void * dummy /*!< Unreferenced variable needed for pthread */  
+)
 {
 
 	int events_waiting = 0; /* Are there events waiting in the queue? */
@@ -99,8 +111,14 @@ void * eventc_timed_start(void * dummy)
 // Private
 /***************************************/
 
-/* Sends events that are now ready to go */
-static void send_ready_events(void)
+/**
+ * Sends events that are now ready to go
+ *
+ * @return None
+ */
+static void send_ready_events(
+	void
+)
 {
 
 	int i = 0; /* Loop counter */
@@ -133,8 +151,14 @@ static void send_ready_events(void)
 	}
 }
 
-/* Removes the row from the table */
-static void remove_timed_event(int row)
+/**
+ * Removes the row from the table
+ *
+ * @return None
+ */
+static void remove_timed_event(
+	int row /*!< The row index */
+)
 {
 
 	assert(row >= 0);
@@ -149,8 +173,14 @@ static void remove_timed_event(int row)
 
 }
 
-/* Finds the earliest time in the queue list, return 0 if there are no items */
-static int find_earliest_event(struct timespec * earliest_time)
+/**
+ * Finds the earliest time in the queue list
+ *
+ * @return False if there are no items in list
+ */
+static bool find_earliest_event(
+	struct timespec * earliest_time /*!< The earliest time found in list */
+)
 {
 
 	int i = 0; /* Loop counter */
@@ -175,8 +205,14 @@ static int find_earliest_event(struct timespec * earliest_time)
 
 }
 
-/* Add item to queue */
-static void add_timed_event(timed_event_call_t * new_event_details)
+/**
+ * Add item to queue
+ *
+ * @return None
+ */
+static void add_timed_event(
+	timed_event_call_t * new_event_details /*!< Item to add */
+)
 {
 
 	int i = 0; /* Loop counter */
@@ -208,7 +244,11 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 
 #include "CUnit/Basic.h"
 
-
+/**
+ * Test for the find earliest functioniality
+ *
+ * @return None
+ */
 static void TEST_find_earliest(void)
 {
 
@@ -268,7 +308,14 @@ static void TEST_find_earliest(void)
 
 }
 
-int main()
+/**
+ * Unit testing main
+ *
+ * @return Success or failure
+ */
+int main(
+	void
+)
 {
 	CU_pSuite pSuite = NULL;
 
