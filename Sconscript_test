@@ -1,0 +1,21 @@
+Import('env')
+
+env_test = env.Copy()
+
+env_test.Append(CCFLAGS = '-g -Wall -DUNIT_TEST')
+
+env_test.Append(LIBS = [
+	'rt', # For mq
+	'pthread',
+	'cunit',
+])
+
+source_files = [
+	"eventc_timed.c",
+	"eventc_component.c",
+]
+
+env_test.Program(
+	target = "TEST_eventc_timed", 
+	source = source_files
+)

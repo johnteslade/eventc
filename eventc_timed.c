@@ -185,8 +185,88 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 
 }
 
+#ifdef UNIT_TEST
+
+#include "CUnit/Basic.h"
 
 
+static void TEST_find_earliest(void)
+{
 
+	#define EVENT1_SECS 10
+	#define EVENT2_SECS 20
+	#define EVENT3_SECS 5
+
+	timed_event_call_t event1;
+	timed_event_call_t event2;
+	timed_event_call_t event3;
+	struct timespec earliest_time = {0};
+	bool result = false;
+
+	// Create the events
+	event1.event_call = malloc(sizeof(*event1.event_call));
+	event1.secs = EVENT1_SECS;
+	event1.event_call->comp_id = 1;
+
+	event2.event_call = malloc(sizeof(*event2.event_call));
+	event2.secs = EVENT2_SECS;
+	event2.event_call->comp_id = 2;
+
+	event3.event_call = malloc(sizeof(*event3.event_call));
+	event3.secs = EVENT3_SECS;
+	event3.event_call->comp_id = 3;
+	
+	// Add first event and check earliest time
+	add_timed_event(&event1);
+	result = find_earliest_event(&earliest_time);
+	CU_ASSERT_TRUE(result);
+	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT1_SECS);
+	
+	// Add event 2 - earliest should still be event 1
+	add_timed_event(&event2);
+	result = find_earliest_event(&earliest_time);
+	CU_ASSERT_TRUE(result);
+	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT1_SECS);
+	
+	// Add event 3 - earliest should now be event 3
+	add_timed_event(&event3);
+	result = find_earliest_event(&earliest_time);
+	CU_ASSERT_TRUE(result);
+	CU_ASSERT_EQUAL(earliest_time.tv_sec, EVENT3_SECS);
+
+}
+
+int main()
+{
+	CU_pSuite pSuite = NULL;
+
+	/* initialize the CUnit test registry */
+	if (CUE_SUCCESS != CU_initialize_registry())
+	{
+		return CU_get_error();
+	}
+
+	/* add a suite to the registry */
+	pSuite = CU_add_suite("Suite_1", NULL, NULL);
+	if (NULL == pSuite) {
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* add the tests to the suite */
+	if ((NULL == CU_add_test(pSuite, "test of find earliest", TEST_find_earliest)) )
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	/* Run all tests using the CUnit Basic interface */
+	CU_basic_set_mode(CU_BRM_VERBOSE);
+	CU_basic_run_tests();
+	CU_cleanup_registry();
+	return CU_get_error();
+}
+
+#endif /* UNIT_TEST */
 
 
