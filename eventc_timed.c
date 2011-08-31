@@ -185,6 +185,10 @@ static void add_timed_event(timed_event_call_t * new_event_details)
 
 }
 
+/***************************************/
+// Unit Testing
+/***************************************/
+
 #ifdef UNIT_TEST
 
 #include "CUnit/Basic.h"
