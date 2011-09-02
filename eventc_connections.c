@@ -28,6 +28,8 @@ typedef struct
 	bool in_use;
 	comp_t comp_1;
 	comp_t comp_2;
+	eventc_mutator_function * mutator_1_2;
+	eventc_mutator_function * mutator_2_1;
 } connection_pair_t;
 
 /***************************************/
@@ -63,7 +65,17 @@ void eventc_connections_add(
 	comp_t * comp_2
 )
 {
+	eventc_connections_add_with_mutate(comp_1, comp_2, NULL, NULL);
+}
 
+/* Creates a connection with mutation functions*/
+void eventc_connections_add_with_mutate(
+	comp_t * comp_1, 
+	comp_t * comp_2,
+	eventc_mutator_function * mutator_1_2,
+	eventc_mutator_function * mutator_2_1
+)
+{
 	int i = 0; /* Loop counter */
 	bool item_added = false; /* Was item added */
 
@@ -98,6 +110,8 @@ void eventc_connections_add(
 			memcpy(&(connection_table[i].comp_1), comp_1, sizeof(*comp_1));
 			memcpy(&(connection_table[i].comp_2), comp_2, sizeof(*comp_2));
 			connection_table[i].in_use = true;
+			connection_table[i].mutator_1_2 = mutator_1_2;
+			connection_table[i].mutator_2_1 = mutator_2_1;
 			item_added = true;
 			break;
 		}
