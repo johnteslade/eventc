@@ -48,7 +48,7 @@ typedef struct {
 	long nsecs; /*!< If non-zero, the nsec delay to introduce */
 } eventc_mutate_t;
 
-typedef bool (*eventc_mutator_function)(eventc_mutate_t *, void *);
+typedef bool (eventc_mutator_function)(eventc_mutate_t *, void *);
 
 /* Base component struct */
 typedef struct {
