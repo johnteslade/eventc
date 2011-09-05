@@ -47,6 +47,12 @@ void eventc_funcqueue_add(
 
 		mutate = mutator_func(&mutate_opt, NULL);
 
+		if (mutate)
+		{
+			printf("%s: mutate this call drop = %d, sec = %d, nsec = %d\n", __FUNCTION__, mutate_opt.drop, mutate_opt.secs, mutate_opt.nsecs);
+		}
+
+
 	}
 
 	/* Send the message */
