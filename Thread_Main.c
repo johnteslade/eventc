@@ -67,7 +67,7 @@ comp_t * thread_main_new(void)
 	eventc_component_initsub(EVENTC_COMP_DETAILS(new_self));
 
 	/* Add connection */
-	eventc_connections_add_with_mutate(thread_1, thread_2, &thread1_2_mutator, NULL);
+	eventc_connections_add_with_mutate(thread_1, thread_2, NULL, &thread1_2_mutator);
 	//eventc_connections_add(thread_1, thread_3);
 	
 	/* Return thread details */

@@ -24,6 +24,7 @@ void eventc_connections_add_with_mutate(
 );
 
 mqd_t eventc_connections_find_receiver(
+	eventc_mutator_function ** mutator_func, /*! Out: The mutator function for this connection */
 	comp_t * sender_details, 
 	int dest_comp_id,
 	bool allow_loopback

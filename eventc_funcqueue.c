@@ -31,13 +31,23 @@ void eventc_funcqueue_add(
 	eventc_call_t * call_struct = NULL; /* Message structure */
 	int ret = -1; 
 	mqd_t recv_queue; 
+	eventc_mutator_function * mutator_func; /*! The mutator function for this connection */
 
 	printf("%s: %s inst:%d calling %s\n", __FUNCTION__, sender->comp_name, sender->instance_id, function_name);
 
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
 	/* Find a receiver - prevent loopback calls */
-	recv_queue = eventc_connections_find_receiver(sender, call_struct->comp_id, false); 
+	recv_queue = eventc_connections_find_receiver(&mutator_func, sender, call_struct->comp_id, false); 
+
+	if (EVENTC_IS_VALID_PTR(mutator_func))
+	{
+		bool mutate = false; /* Are we mutating */
+		eventc_mutate_t mutate_opt = {0}; /* Mutate options */
+
+		mutate = mutator_func(&mutate_opt, NULL);
+
+	}
 
 	/* Send the message */
 	ret = mq_send(recv_queue, (const char *)&call_struct, sizeof(call_struct), 0); 
@@ -63,13 +73,16 @@ void eventc_funcqueue_timed(
 	mqd_t recv_queue;
 	timed_event_call_t * timed_call_event = NULL; /* Time call struct */
 	struct timespec current_time = {0};
+	eventc_mutator_function * mutator_func; /*! The mutator function for this connection */
 
 	printf("%s: %s inst:%d timed call to %s - s:%d ns:%ld\n", __FUNCTION__, sender->comp_name, sender->instance_id, function_name, secs, nsecs);
 
 	create_call_structure(&call_struct,	function_id, comp_id, data, data_len);
 
 	/* Find a receiver */
-	recv_queue = eventc_connections_find_receiver(sender, call_struct->comp_id, true); 
+	recv_queue = eventc_connections_find_receiver(&mutator_func, sender, call_struct->comp_id, true); 
+
+	// TODO how to handle mutators here? Is the timer queue responsible for this?
 
 	/* Find out current time */
 	ret = clock_gettime(CLOCK_REALTIME, &current_time);

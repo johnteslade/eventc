@@ -48,6 +48,7 @@ typedef struct {
 	long nsecs; /*!< If non-zero, the nsec delay to introduce */
 } eventc_mutate_t;
 
+// TODO needs buffer length and possibly function and component types here.
 typedef bool (eventc_mutator_function)(eventc_mutate_t *, void *);
 
 /* Base component struct */
