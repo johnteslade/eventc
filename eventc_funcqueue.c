@@ -18,6 +18,19 @@ static void create_call_structure(
 	int data_len
 );
 
+static void eventc_funcqueue_send(
+	mqd_t queue,
+	const char * data,
+	int data_len
+);
+
+static void eventc_funcqueue_send_timed(
+	mqd_t queue,
+	eventc_call_t * data,
+	int secs,
+	long nsecs
+);
+
 void eventc_funcqueue_add(
 	int function_id,
 	char * function_name,
@@ -29,7 +42,6 @@ void eventc_funcqueue_add(
 {
 
 	eventc_call_t * call_struct = NULL; /* Message structure */
-	int ret = -1; 
 	mqd_t recv_queue; 
 	eventc_mutator_function * mutator_func; /*! The mutator function for this connection */
 
@@ -56,8 +68,7 @@ void eventc_funcqueue_add(
 	}
 
 	/* Send the message */
-	ret = mq_send(recv_queue, (const char *)&call_struct, sizeof(call_struct), 0); 
-	assert(ret == 0); 
+	eventc_funcqueue_send(recv_queue, (const char *)&call_struct, sizeof(call_struct)); 
 
 }
 
@@ -75,10 +86,7 @@ void eventc_funcqueue_timed(
 {
 
 	eventc_call_t * call_struct = NULL; /* Message structure */
-	int ret = -1; 
 	mqd_t recv_queue;
-	timed_event_call_t * timed_call_event = NULL; /* Time call struct */
-	struct timespec current_time = {0};
 	eventc_mutator_function * mutator_func; /*! The mutator function for this connection */
 
 	printf("%s: %s inst:%d timed call to %s - s:%d ns:%ld\n", __FUNCTION__, sender->comp_name, sender->instance_id, function_name, secs, nsecs);
@@ -90,22 +98,7 @@ void eventc_funcqueue_timed(
 
 	// TODO how to handle mutators here? Is the timer queue responsible for this?
 
-	/* Find out current time */
-	ret = clock_gettime(CLOCK_REALTIME, &current_time);
-	assert(ret == 0);
-
-	/* Created time struct */
-	timed_call_event = malloc(sizeof(*timed_call_event));
-	assert(EVENTC_IS_VALID_PTR(timed_call_event));
-	EVENTC_INIT_STRUCT(*timed_call_event, EVENTC_STRUCT_timed_call_t);
-	timed_call_event->secs = current_time.tv_sec + secs;
-	timed_call_event->nsecs = current_time.tv_nsec + nsecs;
-	timed_call_event->dest_queue_id = recv_queue;
-	timed_call_event->event_call = call_struct;
-
-	/* Send the message */
-	ret = mq_send(eventc_timed_get_q(), (const char *)&timed_call_event, sizeof(timed_call_event), 0); 
-	assert(ret == 0); 
+	eventc_funcqueue_send_timed(recv_queue, call_struct, secs, nsecs); 
 
 }
 
@@ -135,4 +128,46 @@ static void create_call_structure(
 	memcpy((*call_struct)->data, data, data_len); 
 }
 
+static void eventc_funcqueue_send(
+	mqd_t queue,
+	const char * data,
+	int data_len
+)
+{
+	int ret = -1;
+	
+	ret = mq_send(queue, data, data_len, 0); 
+	assert(ret == 0); 
 
+}
+
+static void eventc_funcqueue_send_timed(
+	mqd_t queue,
+	eventc_call_t * data,
+	int secs,
+	long nsecs
+)
+{
+
+	int ret = -1; 
+	timed_event_call_t * timed_call_event = NULL; /* Time call struct */
+	struct timespec current_time = {0};
+
+	/* Find out current time */
+	ret = clock_gettime(CLOCK_REALTIME, &current_time);
+	assert(ret == 0);
+
+	/* Created time struct */
+	timed_call_event = malloc(sizeof(*timed_call_event));
+	assert(EVENTC_IS_VALID_PTR(timed_call_event));
+	EVENTC_INIT_STRUCT(*timed_call_event, EVENTC_STRUCT_timed_call_t);
+	timed_call_event->secs = current_time.tv_sec + secs;
+	timed_call_event->nsecs = current_time.tv_nsec + nsecs;
+	timed_call_event->dest_queue_id = queue;
+	timed_call_event->event_call = data;
+
+	/* Send the message */
+	ret = mq_send(eventc_timed_get_q(), (const char *)&timed_call_event, sizeof(timed_call_event), 0); 
+	assert(ret == 0); 
+
+}
