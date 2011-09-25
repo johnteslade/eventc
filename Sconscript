@@ -22,7 +22,10 @@ source_files = [
 	"Thread_Main_autogen.c",
 ]
 
-env.Program(
-	target = "eventc", 
-	source = source_files
-)
+env.Install(
+	"#out/", 
+	env.Program(
+		target = "eventc", 
+		source = source_files
+		)
+	)
