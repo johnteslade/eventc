@@ -6,8 +6,8 @@ Event c defined connection list
 
 */
 
-#include "eventc_connections.h"
-#include "eventc.h"
+#include <eventc_connections.h>
+#include <eventc.h>
 
 #include <stdlib.h>
 #include <assert.h>

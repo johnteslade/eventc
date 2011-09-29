@@ -2,18 +2,25 @@ Import('env')
 
 env.Append(CCFLAGS = '-g -Wall')
 
+env.Append(CPPPATH = ['#inc/', '#src/eventc_lib/'] )
+
 env.Append(LIBS = [
 	'rt', # For mq
 	'pthread',
 ])
 
-source_files = [
-	"myprog.c",
+lib_source_files = [
 	"eventc_connections.c",
 	"eventc_funcqueue.c",
 	"eventc_timed.c",
 	"eventc_main.c",
 	"eventc_component.c",
+]
+
+lib_source_files = [ 'src/eventc_lib/' + filename for filename in lib_source_files ] 
+
+source_files = [
+	"myprog.c",
 	"Thread1.c",
 	"Thread1_autogen.c",
 	"Thread2.c",
@@ -26,6 +33,6 @@ env.Install(
 	"#out/", 
 	env.Program(
 		target = "eventc", 
-		source = source_files
+		source = source_files + lib_source_files
 		)
 	)

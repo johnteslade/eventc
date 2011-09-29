@@ -1,8 +1,8 @@
 /* Functions for handling the calling of functions */
 
-#include "eventc_funcqueue.h"
-#include "eventc_timed.h"
-#include "eventc.h"
+#include <eventc_funcqueue.h>
+#include <eventc_timed.h>
+#include <eventc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
