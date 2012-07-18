@@ -1,8 +1,8 @@
 /* Functions for handling timed calls */
 
-#include "eventc_timed.h"
-#include "eventc_component.h" /* TODO remove when mqueue create is in better place */
-#include "eventc.h"
+#include <eventc_timed.h>
+#include <eventc_component.h> /* TODO remove when mqueue create is in better place */
+#include <eventc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -242,7 +242,7 @@ static void add_timed_event(
 
 #ifdef UNIT_TEST
 
-#include "CUnit/Basic.h"
+#include <CUnit/Basic.h>
 
 /**
  * Test for the find earliest functioniality

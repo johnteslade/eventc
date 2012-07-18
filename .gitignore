@@ -4,6 +4,7 @@
 tags
 build/
 docs/
+out/
 
 *_autogen.h
 *_autogen.c

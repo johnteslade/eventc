@@ -41,6 +41,15 @@ typedef struct {
 	int count;
 } eventc_subcomponents_t;
 
+/*!< Mutation function structure */
+typedef struct {
+	bool drop; /*!< Should this message be dropped */
+	int secs; /*!< If non-zero, the second delay to introduce */
+	long nsecs; /*!< If non-zero, the nsec delay to introduce */
+} eventc_mutate_t;
+
+// TODO needs buffer length and possibly function and component types here.
+typedef bool (eventc_mutator_function)(eventc_mutate_t *, void *);
 
 /* Base component struct */
 typedef struct {

@@ -1,8 +1,10 @@
 Import('env')
 
-env_test = env.Copy()
+env_test = env.Clone()
 
 env_test.Append(CCFLAGS = '-g -Wall -DUNIT_TEST')
+
+env_test.Append(CPPPATH = ['#inc/', 'src/eventc_lib/'] )
 
 env_test.Append(LIBS = [
 	'rt', # For mq
@@ -15,7 +17,12 @@ source_files = [
 	"eventc_component.c",
 ]
 
-env_test.Program(
-	target = "TEST_eventc_timed", 
-	source = source_files
-)
+source_files = [ 'src/eventc_lib/' + filename for filename in source_files ] 
+
+env.Install(
+	"#out/", 
+	env_test.Program(
+		target = "TEST_eventc_timed", 
+		source = source_files
+		)
+	)

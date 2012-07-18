@@ -17,6 +17,24 @@
 #include "Thread1.h"
 #include "Thread2.h"
 
+bool thread1_2_mutator(eventc_mutate_t * mutate_opt, void * data)
+{
+
+	static int packet_count = 0;
+
+	packet_count++;
+
+	if (packet_count % 2)
+	{
+		mutate_opt->drop = true;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
 comp_t * thread_main_new(void)
 {
 
@@ -49,7 +67,7 @@ comp_t * thread_main_new(void)
 	eventc_component_initsub(EVENTC_COMP_DETAILS(new_self));
 
 	/* Add connection */
-	eventc_connections_add(thread_1, thread_2);
+	eventc_connections_add_with_mutate(thread_1, thread_2, NULL, &thread1_2_mutator);
 	//eventc_connections_add(thread_1, thread_3);
 	
 	/* Return thread details */

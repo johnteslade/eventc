@@ -6,8 +6,8 @@ Event c defined connection list
 
 */
 
-#include "eventc_connections.h"
-#include "eventc.h"
+#include <eventc_connections.h>
+#include <eventc.h>
 
 #include <stdlib.h>
 #include <assert.h>
@@ -28,6 +28,8 @@ typedef struct
 	bool in_use;
 	comp_t comp_1;
 	comp_t comp_2;
+	eventc_mutator_function * mutator_1_2;
+	eventc_mutator_function * mutator_2_1;
 } connection_pair_t;
 
 /***************************************/
@@ -48,6 +50,7 @@ static int eventc_connections_is_match(
 );
 
 static comp_t * find_reciever_in_table(
+	eventc_mutator_function ** mutator_func, /*! Out: The mutator function for this connection */
 	comp_t * sender, 
 	int dest_comp_id
 );
@@ -63,7 +66,17 @@ void eventc_connections_add(
 	comp_t * comp_2
 )
 {
+	eventc_connections_add_with_mutate(comp_1, comp_2, NULL, NULL);
+}
 
+/* Creates a connection with mutation functions*/
+void eventc_connections_add_with_mutate(
+	comp_t * comp_1, 
+	comp_t * comp_2,
+	eventc_mutator_function * mutator_1_2,
+	eventc_mutator_function * mutator_2_1
+)
+{
 	int i = 0; /* Loop counter */
 	bool item_added = false; /* Was item added */
 
@@ -98,6 +111,8 @@ void eventc_connections_add(
 			memcpy(&(connection_table[i].comp_1), comp_1, sizeof(*comp_1));
 			memcpy(&(connection_table[i].comp_2), comp_2, sizeof(*comp_2));
 			connection_table[i].in_use = true;
+			connection_table[i].mutator_1_2 = mutator_1_2;
+			connection_table[i].mutator_2_1 = mutator_2_1;
 			item_added = true;
 			break;
 		}
@@ -109,12 +124,17 @@ void eventc_connections_add(
 
 /* Find the queue for a reciever */
 mqd_t eventc_connections_find_receiver(
-	comp_t * sender, 
-	int dest_comp_id,
-	bool allow_loopback
+	eventc_mutator_function ** mutator_func, /*! Out: The mutator function for this connection */
+	comp_t * sender, /*!< In: The sending of this message */ 
+	int dest_comp_id, /*!< In: The expected destination */
+	bool allow_loopback /*!< In: Is lookback (send to self) allowed on this search */
 )
 {
 	comp_t * receiver = NULL; /* The found row */
+
+	assert(EVENTC_IS_VALID_PTR(mutator_func));
+
+	*mutator_func = NULL;
 
 	printf("%s: sending from %s inst:%d to comp %d\n", __FUNCTION__, sender->comp_name, sender->instance_id, dest_comp_id);
 
@@ -127,12 +147,17 @@ mqd_t eventc_connections_find_receiver(
 	}
 	else
 	{
-		receiver = find_reciever_in_table(sender, dest_comp_id);
+		receiver = find_reciever_in_table(mutator_func, sender, dest_comp_id);
 	}
 
 	assert(EVENTC_IS_VALID_PTR(receiver));
 	
 	printf("%s: connection found.  sending from %s inst:%d to %s inst:%d\n", __FUNCTION__, sender->comp_name, sender->instance_id, receiver->comp_name, receiver->instance_id);
+
+	if (*mutator_func != NULL)
+	{
+		printf("%s: mutator func found\n", __FUNCTION__);
+	}
 
 	return receiver->queue_id;
 
@@ -143,7 +168,9 @@ mqd_t eventc_connections_find_receiver(
 /***************************************/
 
 /* Look for the receiver in the stored table */
+// TODO improve with a bool return and the comp_t as double pointer
 static comp_t * find_reciever_in_table(
+	eventc_mutator_function ** mutator_func, /*! Out: The mutator function for this connection */
 	comp_t * sender, 
 	int dest_comp_id
 )
@@ -152,6 +179,8 @@ static comp_t * find_reciever_in_table(
 	int i = 0; /* Loop counter */
 	comp_t * receiver = NULL; /* The found row */
 
+	assert(EVENTC_IS_VALID_PTR(mutator_func));
+
 	/* Look at items in use and find the destination */
 	for (i = 0; i < EVENTC_ARRAY_SIZE(connection_table); i++)
 	{
@@ -159,11 +188,13 @@ static comp_t * find_reciever_in_table(
 		{
 			if (eventc_connections_is_match(&connection_table[i].comp_1, &connection_table[i].comp_2, sender->instance_id, dest_comp_id))
 			{
+				*mutator_func = connection_table[i].mutator_1_2;
 				receiver = &(connection_table[i].comp_2);
 				break;
 			}
 			else if (eventc_connections_is_match(&connection_table[i].comp_2, &connection_table[i].comp_1, sender->instance_id, dest_comp_id))
 			{
+				*mutator_func = connection_table[i].mutator_2_1;
 				receiver = &(connection_table[i].comp_1);
 				break;
 			}

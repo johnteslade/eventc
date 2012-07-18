@@ -1,9 +1,9 @@
 /* Functions for the main thread call */
 
-#include "eventc_main.h"
-#include "eventc_timed.h"
-#include "eventc_component.h"
-#include "eventc.h"
+#include <eventc_main.h>
+#include <eventc_timed.h>
+#include <eventc_component.h>
+#include <eventc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
